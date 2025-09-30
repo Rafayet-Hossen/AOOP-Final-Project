@@ -2,6 +2,7 @@ package com.zcare.finalproject;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,8 +15,10 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class DonersController {
+public class DonersController extends PageUtil implements Initializable {
 
     @FXML
     private Hyperlink createDonersAccount;
@@ -36,10 +39,11 @@ public class DonersController {
     private StackPane parentsLoginPage;
 
     @FXML
-    private ComboBox<?> selectUser;
+    private ComboBox<String> selectUser;
 
     @FXML
     private Hyperlink switchToLogin;
+
 
     public void createDonersAccount() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("bloodDonerCreateAccount.fxml"));
@@ -61,4 +65,19 @@ public class DonersController {
     }
 
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        PageUtil.populateUsers(selectUser);
+        selectUser.getSelectionModel().select("Doner");
+        selectUser.setOnAction(event -> {
+            String selected = selectUser.getSelectionModel().getSelectedItem();
+            if(!"Parent".equals(selected)){
+                try {
+                    PageUtil.switchUser(selectUser);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
 }
