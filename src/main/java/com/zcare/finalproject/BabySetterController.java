@@ -70,7 +70,7 @@ public class BabySetterController extends PageUtil implements Initializable {
         selectUser.getSelectionModel().select("BabySetter");
         selectUser.setOnAction(event -> {
             String selected = selectUser.getSelectionModel().getSelectedItem();
-            if(!"Parent".equals(selected)){
+            if(!"BabySetter".equals(selected)){
                 try {
                     PageUtil.switchUser(selectUser);
                 } catch (Exception e) {

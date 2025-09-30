@@ -70,7 +70,7 @@ public class DoctorsController extends PageUtil implements Initializable {
         selectUser.getSelectionModel().select("Doctor");
         selectUser.setOnAction(event -> {
             String selected = selectUser.getSelectionModel().getSelectedItem();
-            if(!"Parent".equals(selected)){
+            if(!"Doctor".equals(selected)){
                 try {
                     PageUtil.switchUser(selectUser);
                 } catch (Exception e) {

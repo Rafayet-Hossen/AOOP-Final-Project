@@ -71,7 +71,7 @@ public class DonersController extends PageUtil implements Initializable {
         selectUser.getSelectionModel().select("Doner");
         selectUser.setOnAction(event -> {
             String selected = selectUser.getSelectionModel().getSelectedItem();
-            if(!"Parent".equals(selected)){
+            if(!"Doner".equals(selected)){
                 try {
                     PageUtil.switchUser(selectUser);
                 } catch (Exception e) {
