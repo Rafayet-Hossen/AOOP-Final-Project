@@ -1,7 +1,10 @@
 package com.zcare.finalproject;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -9,6 +12,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -77,6 +81,11 @@ public class AdminController extends PageUtil implements Initializable {
             rs = ps.executeQuery();
             if (rs.next()) {
                 AlertUtil.successAlert("Login successful!");
+                //load admin dashboard
+                Stage stage = (Stage) adminLoginBtn.getScene().getWindow();
+                Parent root = FXMLLoader.load(getClass().getResource("/com/zcare/finalproject/adminDashboard.fxml"));
+                stage.setScene(new Scene(root));
+                stage.show();
             } else {
                 AlertUtil.errorAlert("Invalid email or password.");
             }
