@@ -11,6 +11,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ResourceBundle;
 
 public class AdminController extends PageUtil implements Initializable {
@@ -33,8 +36,9 @@ public class AdminController extends PageUtil implements Initializable {
     @FXML
     private ComboBox<String> selectUser;
 
-    @FXML
-    private Label sidepane;
+    private Connection connection;
+    private PreparedStatement ps;
+    private ResultSet rs;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -50,5 +54,34 @@ public class AdminController extends PageUtil implements Initializable {
                 }
             }
         });
+    }
+
+    public void adminLogin(){
+        String email = adminEmail.getText();
+        String password = adminPassword.getText();
+
+        if(email.isEmpty() || password.isEmpty()){
+            AlertUtil.errorAlert("Please fill in all fields.");
+        }
+
+        String query = "SELECT * FROM admins WHERE email = ? AND password = ?";
+
+        try{
+            connection = DBConnection.getConnection();
+            if(connection == null){
+                AlertUtil.errorAlert("Database connection failed.");
+            }
+            ps = connection.prepareStatement(query);
+            ps.setString(1, email);
+            ps.setString(2, password);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                AlertUtil.successAlert("Login successful!");
+            } else {
+                AlertUtil.errorAlert("Invalid email or password.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
