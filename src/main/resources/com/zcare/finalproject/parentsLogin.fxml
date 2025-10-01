@@ -43,7 +43,7 @@
                   </ImageView>
                   <TextField fx:id="parentsEmail" layoutX="48.0" layoutY="176.0" prefHeight="39.0" prefWidth="260.0" promptText="Email" />
                   <PasswordField fx:id="parentsPassword" layoutX="48.0" layoutY="229.0" prefHeight="39.0" prefWidth="260.0" promptText="Password" />
-                  <Button fx:id="parentsLoginBtn" layoutX="49.0" layoutY="284.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="260.0" text="Login" />
+                  <Button fx:id="parentsLoginBtn" layoutX="49.0" layoutY="284.0" mnemonicParsing="false" onAction="#parentLogin" prefHeight="32.0" prefWidth="260.0" text="Login" />
                   <Hyperlink fx:id="parentsCreateAccount" layoutX="123.0" layoutY="328.0" onAction="#createParentsAccount" text="Create an account?" />
                </children>
             </Pane>

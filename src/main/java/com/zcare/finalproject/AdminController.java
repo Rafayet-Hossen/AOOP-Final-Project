@@ -83,7 +83,7 @@ public class AdminController extends PageUtil implements Initializable {
                 AlertUtil.successAlert("Login successful!");
                 //load admin dashboard
                 Stage stage = (Stage) adminLoginBtn.getScene().getWindow();
-                Parent root = FXMLLoader.load(getClass().getResource("/com/zcare/finalproject/adminDashboard.fxml"));
+                Parent root = FXMLLoader.load(getClass().getResource("adminDashboard.fxml"));
                 stage.setScene(new Scene(root));
                 stage.show();
             } else {
