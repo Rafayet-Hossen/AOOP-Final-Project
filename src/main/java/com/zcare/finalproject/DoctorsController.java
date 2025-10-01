@@ -17,27 +17,43 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.ResultSet;
 import java.util.ResourceBundle;
 
 public class DoctorsController extends PageUtil implements Initializable {
 
     @FXML
+    private Button createDoctorAccountBtn;
+
+    @FXML
     private Hyperlink createDoctorAccount;
 
     @FXML
-    private TextField donerEmail;
+    private TextField doctorClinicAddress;
 
     @FXML
-    private Button donerLoginBtn;
+    private TextField doctorEmail;
 
     @FXML
-    private PasswordField donerPassword;
+    private TextField doctorFullName;
 
     @FXML
-    private Pane mainpane;
+    private PasswordField doctorPassword;
 
     @FXML
-    private StackPane parentsLoginPage;
+    private TextField doctorPhoneNo;
+
+    @FXML
+    private ComboBox<String> doctorSpecialization;
+
+    @FXML
+    private Button doctorLoginAccountBtn;
+
+    @FXML
+    private TextField doctorLoginEmail;
+
+    @FXML
+    private PasswordField doctorLoginPassword;
 
     @FXML
     private ComboBox<String> selectUser;
@@ -66,18 +82,132 @@ public class DoctorsController extends PageUtil implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        PageUtil.populateUsers(selectUser);
-        selectUser.getSelectionModel().select("Doctor");
-        selectUser.setOnAction(event -> {
-            String selected = selectUser.getSelectionModel().getSelectedItem();
-            if(!"Doctor".equals(selected)){
-                try {
-                    PageUtil.switchUser(selectUser);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+
+        if (doctorSpecialization != null) {
+            doctorSpecialization.getItems().addAll(
+                    "General Physician", "Cardiologist", "Dermatologist", "Pediatrician",
+                    "Gynecologist", "Dentist", "ENT Specialist", "Orthopedic", "Neurologist",
+                    "Psychiatrist", "Surgeon", "Urologist", "Ophthalmologist"
+            );
+            doctorSpecialization.setVisibleRowCount(5);
+            doctorSpecialization.getSelectionModel().clearSelection();
+        }
+
+        if (selectUser != null) {
+            PageUtil.populateUsers(selectUser);
+            selectUser.getSelectionModel().select("Doctor");
+            selectUser.setOnAction(event -> {
+                String selected = selectUser.getSelectionModel().getSelectedItem();
+                if (!"Doctor".equals(selected)) {
+                    try {
+                        PageUtil.switchUser(selectUser);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        }
+    }
+
+    public void doctorRegister() {
+        String email = doctorEmail.getText().trim();
+        String password = doctorPassword.getText();
+        String name = doctorFullName.getText().trim();
+        String phone = doctorPhoneNo.getText().trim();
+        String clinic = doctorClinicAddress.getText().trim();
+        String specialization = doctorSpecialization.getValue();
+
+        if (email.isEmpty() || password.isEmpty() || name.isEmpty()
+                || phone.isEmpty() || clinic.isEmpty() || specialization == null) {
+            AlertUtil.errorAlert("Please fill in all fields.");
+            return;
+        }
+
+        if (password.length() < 8) {
+            AlertUtil.errorAlert("Password must be at least 8 characters.");
+            return;
+        }
+
+        String checkEmail = "SELECT * FROM doctors WHERE email = ?";
+        String insert = "INSERT INTO doctors (email, password, name, phone, specialization, clinic_address) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (var con = DBConnection.getConnection();
+             var psCheck = con.prepareStatement(checkEmail)) {
+
+            psCheck.setString(1, email);
+            ResultSet rs = psCheck.executeQuery();
+
+            if (rs.next()) {
+                AlertUtil.errorAlert("Email already exists.");
+                return;
+            }
+
+            try (var psInsert = con.prepareStatement(insert)) {
+                psInsert.setString(1, email);
+                psInsert.setString(2, password);
+                psInsert.setString(3, name);
+                psInsert.setString(4, phone);
+                psInsert.setString(5, specialization);
+                psInsert.setString(6, clinic);
+
+                int rows = psInsert.executeUpdate();
+                if (rows > 0) {
+                    AlertUtil.successAlert("Account created successfully!");
+
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("doctorsLogin.fxml"));
+                    Parent root = fxmlLoader.load();
+                    Stage stage = (Stage) createDoctorAccountBtn.getScene().getWindow();
+                    stage.setScene(new Scene(root));
+                    stage.setTitle("Doctor Login");
+                    stage.setResizable(false);
+                    stage.show();
+                } else {
+                    AlertUtil.errorAlert("Failed to create account.");
                 }
             }
-        });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Database error: " + e.getMessage());
+        }
+    }
+
+    public void doctorLogin() {
+        String email = doctorLoginEmail.getText().trim();
+        String password = doctorLoginPassword.getText();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            AlertUtil.errorAlert("Please enter both email and password.");
+            return;
+        }
+
+        String query = "SELECT * FROM doctors WHERE email = ? AND password = ?";
+
+        try (var con = DBConnection.getConnection();
+             var ps = con.prepareStatement(query)) {
+
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                AlertUtil.successAlert("Login successful!");
+
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("doctorDashboard.fxml"));
+                Parent root = fxmlLoader.load();
+                Stage stage = (Stage) doctorLoginAccountBtn.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.setTitle("Doctor Dashboard");
+                stage.setResizable(false);
+                stage.show();
+            } else {
+                AlertUtil.errorAlert("Invalid credentials.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Database error: " + e.getMessage());
+        }
     }
 
 }

@@ -107,8 +107,6 @@ public class ParentsController extends PageUtil implements Initializable {
             parentDistrict.getItems().addAll(districts);
             parentDistrict.setVisibleRowCount(5);
             parentDistrict.getSelectionModel().clearSelection();
-        } else {
-            System.out.println("ComboBox Is NULL");
         }
 
         if (selectUser != null) {
@@ -126,8 +124,6 @@ public class ParentsController extends PageUtil implements Initializable {
                     }
                 }
             });
-        } else {
-            System.out.println("Select User ComboBox is NULL");
         }
     }
 
