@@ -3,6 +3,7 @@ module com.zcare.finalproject {
     requires javafx.fxml;
     requires javafx.graphics;
     requires java.sql;
+    requires javafx.base;
 
 
     opens com.zcare.finalproject to javafx.fxml;
