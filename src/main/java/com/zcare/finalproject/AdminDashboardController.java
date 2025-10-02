@@ -2,11 +2,17 @@ package com.zcare.finalproject;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.stage.Stage;
 
 
 import java.net.URL;
@@ -27,12 +33,12 @@ public class AdminDashboardController implements Initializable {
     @FXML private TableColumn<Doctor, String> phone;
     @FXML private TableColumn<Doctor, String> specialization;
 
-    @FXML private TableView<Parent> parentsInformationTable;
-    @FXML private TableColumn<Parent, Integer> parentsID;
-    @FXML private TableColumn<Parent, String> parentsName;
-    @FXML private TableColumn<Parent, String> parentsEmail;
-    @FXML private TableColumn<Parent, String> parentsPhone;
-    @FXML private TableColumn<Parent, String> parentsDistricts;
+    @FXML private TableView<Parents> parentsInformationTable;
+    @FXML private TableColumn<Parents, Integer> parentsID;
+    @FXML private TableColumn<Parents, String> parentsName;
+    @FXML private TableColumn<Parents, String> parentsEmail;
+    @FXML private TableColumn<Parents, String> parentsPhone;
+    @FXML private TableColumn<Parents, String> parentsDistricts;
     @FXML
     private Label activeParentsCount;
 
@@ -52,6 +58,11 @@ public class AdminDashboardController implements Initializable {
     @FXML private TableColumn<BabySetter, String> setterDistrict;
     @FXML private Label activeSettersCount;
 
+    @FXML private Button logoutBtn;
+    @FXML private Label loginAdminId;
+    @FXML private Label loginAdminName;
+    @FXML private Label adminUsername;
+    @FXML private Label informationOf;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -79,11 +90,34 @@ public class AdminDashboardController implements Initializable {
         setterPhone.setCellValueFactory(cell -> cell.getValue().phoneProperty());
         setterDistrict.setCellValueFactory(cell -> cell.getValue().districtProperty());
 
+        loadAdminInfo();
         loadDoctors();
         loadParents();
         loadDoners();
         loadSetters();
     }
+
+    private void loadAdminInfo() {
+        loginAdminId.setText(String.valueOf(SessionManager.loggedInAdminId));
+        loginAdminName.setText(SessionManager.loggedInAdminName);
+        adminUsername.setText(SessionManager.loggedInAdminName);
+    }
+
+    @FXML
+    private void logout() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("parentsLogin.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) logoutBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Parent Login");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Failed to load login page.");
+        }
+    }
+
 
     public void loadDoctors() {
 
@@ -112,6 +146,7 @@ public class AdminDashboardController implements Initializable {
             parentsInformationTable.setVisible(false);
             donersInformationTable.setVisible(false);
             settersInformationTable.setVisible(false);
+            informationOf.setText("Information of Doctors");
             activeDoctorsCount.setText(String.valueOf(count));
 
         } catch (Exception e) {
@@ -122,7 +157,7 @@ public class AdminDashboardController implements Initializable {
 
     public void loadParents() {
         int count = 0;
-        ObservableList<Parent> list = FXCollections.observableArrayList();
+        ObservableList<Parents> list = FXCollections.observableArrayList();
 
         String query = "SELECT id, email, name, phone, district FROM parents";
 
@@ -131,7 +166,7 @@ public class AdminDashboardController implements Initializable {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                list.add(new Parent(
+                list.add(new Parents(
                         rs.getInt("id"),
                         rs.getString("email"),
                         rs.getString("name"),
@@ -146,6 +181,7 @@ public class AdminDashboardController implements Initializable {
             doctorsInformationTable.setVisible(false);
             donersInformationTable.setVisible(false);
             settersInformationTable.setVisible(false);
+            informationOf.setText("Information of Parents");
             activeParentsCount.setText(String.valueOf(count));
 
         } catch (Exception e) {
@@ -179,6 +215,7 @@ public class AdminDashboardController implements Initializable {
             doctorsInformationTable.setVisible(false);
             parentsInformationTable.setVisible(false);
             settersInformationTable.setVisible(false);
+            informationOf.setText("Information of Doners");
             activeDonersCount.setText(String.valueOf(count));
 
         }catch (SQLException e) {
@@ -214,6 +251,7 @@ public class AdminDashboardController implements Initializable {
             doctorsInformationTable.setVisible(false);
             donersInformationTable.setVisible(false);
             parentsInformationTable.setVisible(false);
+            informationOf.setText("Information of Baby Setters");
             activeSettersCount.setText(String.valueOf(count));
 
         } catch (Exception e) {

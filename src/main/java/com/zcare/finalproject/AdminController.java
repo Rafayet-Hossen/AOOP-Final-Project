@@ -80,6 +80,10 @@ public class AdminController extends PageUtil implements Initializable {
             ps.setString(2, password);
             rs = ps.executeQuery();
             if (rs.next()) {
+                SessionManager.loggedInAdminId = rs.getInt("id");
+                SessionManager.loggedInAdminName = rs.getString("name");
+                SessionManager.loggedInAdminEmail = rs.getString("email");
+
                 AlertUtil.successAlert("Login successful!");
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/zcare/finalproject/adminDashboard.fxml"));
                 Parent root = loader.load();

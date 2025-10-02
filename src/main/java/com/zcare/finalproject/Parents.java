@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Parent {
+public class Parents {
     private final IntegerProperty id;
     private final StringProperty name;
     private final StringProperty email;
@@ -13,7 +13,7 @@ public class Parent {
     private final StringProperty district;
 
 
-    public Parent(int id, String email, String name, String phone, String district) {
+    public Parents(int id, String email, String name, String phone, String district) {
         this.id = new SimpleIntegerProperty(id);
         this.email = new SimpleStringProperty(email);
         this.name = new SimpleStringProperty(name);
