@@ -10,8 +10,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -212,7 +210,8 @@ public class ParentsController extends PageUtil implements Initializable {
 
             if (rs.next()) {
                 AlertUtil.successAlert("Login successful!");
-
+                SessionManager.loggedInParentId = rs.getInt("id");
+                SessionManager.loggedInParentsName = rs.getString("name");
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("parentsDashboard.fxml"));
                 Parent root = fxmlLoader.load();
                 Stage stage = (Stage) parentsLoginBtn.getScene().getWindow();

@@ -16,7 +16,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zcare.finalproject.ParentDashboardController">
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0">
          <top>
@@ -26,36 +26,36 @@
                      <font>
                         <Font name="Tahoma Bold" size="17.0" />
                      </font></Label>
-                  <Circle fill="DODGERBLUE" layoutX="888.0" layoutY="25.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" />
-                  <Label layoutX="920.0" layoutY="16.0" prefHeight="17.0" prefWidth="39.0" text="Active">
+                  <Circle fill="DODGERBLUE" layoutX="889.0" layoutY="23.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Label layoutX="919.0" layoutY="16.0" prefHeight="20.0" prefWidth="47.0" text="Active">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Circle fill="#17da45" layoutX="970.0" layoutY="26.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Label layoutX="686.0" layoutY="16.0" prefHeight="19.0" prefWidth="60.0" text="Welcome,">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Circle fill="#17da45" layoutX="963.0" layoutY="26.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" />
-                  <Label layoutX="737.0" layoutY="16.0" prefHeight="19.0" prefWidth="60.0" text="Welcome,">
+                  <Label fx:id="loginParentsName" layoutX="746.0" layoutY="17.0" prefHeight="19.0" prefWidth="116.0" text="User 123">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Label fx:id="loginParentsName" layoutX="797.0" layoutY="17.0" prefHeight="19.0" prefWidth="60.0" text="User 123">
+                  <Label fx:id="currentTimeLabel" layoutX="507.0" layoutY="17.0" prefHeight="19.0" prefWidth="98.0" text="Current Time">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Label fx:id="currentTimeLabel" layoutX="563.0" layoutY="16.0" prefHeight="19.0" prefWidth="98.0" text="Current Time">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Label>
-                  <Button fx:id="logoutBtn" layoutX="674.0" layoutY="12.0" mnemonicParsing="false" text="Logout" />
+                  <Button fx:id="logoutBtn" layoutX="613.0" layoutY="13.0" mnemonicParsing="false" text="Logout" />
                </children>
             </AnchorPane>
          </top>
          <left>
             <AnchorPane prefHeight="553.0" prefWidth="190.0" BorderPane.alignment="CENTER">
                <children>
-                  <ImageView fitHeight="100.0" fitWidth="121.0" layoutX="50.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="68.0" fitWidth="91.0" layoutX="60.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@images/family.png" />
                      </image>
@@ -79,12 +79,22 @@
                      </font>
                   </Label>
                   <Button fx:id="notificationsBtn" layoutX="18.0" layoutY="415.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Notifications" />
+                  <Label fx:id="loginParentId" layoutX="77.0" layoutY="82.0" prefHeight="19.0" prefWidth="9.0" text="0">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="currentTimeLabel11" layoutX="19.0" layoutY="82.0" prefHeight="19.0" prefWidth="58.0" text="Parent Id:">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
                </children></AnchorPane>
          </left>
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <TableView layoutX="14.0" layoutY="321.0" prefHeight="200.0" prefWidth="788.0">
+                  <TableView fx:id="babyInformationTable" layoutX="14.0" layoutY="321.0" prefHeight="200.0" prefWidth="788.0">
                     <columns>
                       <TableColumn fx:id="babyid" prefWidth="50.0" text="Baby Id" />
                       <TableColumn fx:id="babyname" prefWidth="123.0" text="Baby Name" />
@@ -110,7 +120,7 @@
                   <TextArea fx:id="alergiesNote" layoutX="230.0" layoutY="49.0" prefHeight="166.0" prefWidth="200.0" promptText="Alergies" />
                   <TextArea fx:id="medicalConditionNote" layoutX="439.0" layoutY="49.0" prefHeight="166.0" prefWidth="200.0" promptText="Medical Conditions" />
                   <TextArea fx:id="informationNote" layoutX="229.0" layoutY="226.0" prefHeight="77.0" prefWidth="409.0" promptText="Notes" />
-                  <Button fx:id="submitFormBtn" layoutX="663.0" layoutY="274.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="139.0" text="Submit Form" />
+                  <Button fx:id="submitFormBtn" layoutX="663.0" layoutY="274.0" mnemonicParsing="false" onAction="#handleSubmitForm" prefHeight="25.0" prefWidth="139.0" text="Submit Form" />
                </children></AnchorPane>
          </center>
       </BorderPane>
