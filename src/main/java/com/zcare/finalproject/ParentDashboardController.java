@@ -4,8 +4,13 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.sql.Connection;
@@ -54,6 +59,16 @@ public class ParentDashboardController implements Initializable {
 
     @FXML
     private TableView<Baby> babyInformationTable;
+
+    @FXML
+    private TableView<Doctor> availableDoctorsTable;
+
+    @FXML private TableColumn<Doctor, String> doctorsName;
+    @FXML private TableColumn<Doctor, String> doctorsEmail;
+    @FXML private TableColumn<Doctor, String> doctorsPhoneNo;
+    @FXML private TableColumn<Doctor, String> clinicAddress;
+    @FXML private TableColumn<Doctor, String> doctorSpecialization;
+    @FXML private Button bookAppointmentBtn;
 
     @FXML
     private TableColumn<Baby,String> babygender;
@@ -111,6 +126,8 @@ public class ParentDashboardController implements Initializable {
 
     @FXML
     private Label loginParentId;
+    @FXML
+    private AnchorPane availableDoctorsPane;
 
 
     @Override
@@ -228,6 +245,71 @@ public class ParentDashboardController implements Initializable {
             AlertUtil.errorAlert("Failed to load baby data.");
         }
     }
+
+    @FXML
+    private void loadDoctorTable() {
+        ObservableList<Doctor> doctorList = FXCollections.observableArrayList();
+        availableDoctorsPane.setVisible(true);
+        String sql = "SELECT id, name, email, phone, clinic_address, specialization FROM doctors";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                doctorList.add(new Doctor(
+                        rs.getInt("id"),
+                        rs.getString("email"),
+                        rs.getString("name"),
+                        rs.getString("phone"),
+                        rs.getString("specialization"),
+                        rs.getString("clinic_address")
+                ));
+            }
+
+            doctorsName.setCellValueFactory(cell -> cell.getValue().nameProperty());
+            doctorsEmail.setCellValueFactory(cell -> cell.getValue().emailProperty());
+            doctorsPhoneNo.setCellValueFactory(cell -> cell.getValue().phoneProperty());
+            clinicAddress.setCellValueFactory(cell -> cell.getValue().clinicAddressProperty());
+            doctorSpecialization.setCellValueFactory(cell -> cell.getValue().specializationProperty());
+
+            availableDoctorsTable.setItems(doctorList);
+            availableDoctorsTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+            bookAppointmentBtn.setOnAction(e -> openAppointmentForm());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Failed to load doctor data.");
+        }
+    }
+
+    private void openAppointmentForm() {
+        Doctor selected = availableDoctorsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            AlertUtil.errorAlert("Please select a doctor from the table.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("bookAppointment.fxml"));
+            Parent root = loader.load();
+
+            BookAppointmentController controller = loader.getController();
+            controller.setDoctor(selected.getId()); // pass selected doctor ID
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Book Appointment");
+            stage.setResizable(false);
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Failed to open appointment form.");
+        }
+    }
+
 
     private void clearForm() {
         babyName.clear();

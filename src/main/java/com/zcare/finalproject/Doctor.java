@@ -8,13 +8,15 @@ public class Doctor {
     private final StringProperty email;
     private final StringProperty phone;
     private final StringProperty specialization;
+    private final StringProperty clinicAddress;
 
-    public Doctor(int id, String email, String name, String phone, String specialization) {
+    public Doctor(int id, String email, String name, String phone, String specialization, String clinicAddress) {
         this.id = new SimpleIntegerProperty(id);
         this.email = new SimpleStringProperty(email);
         this.name = new SimpleStringProperty(name);
         this.phone = new SimpleStringProperty(phone);
         this.specialization = new SimpleStringProperty(specialization);
+        this.clinicAddress = new SimpleStringProperty(clinicAddress);
     }
 
     public int getId() { return id.get(); }
@@ -31,4 +33,6 @@ public class Doctor {
 
     public String getSpecialization() { return specialization.get(); }
     public StringProperty specializationProperty() { return specialization; }
+    public String getClinicAddress() { return clinicAddress.get(); }
+    public StringProperty clinicAddressProperty() { return clinicAddress; }
 }

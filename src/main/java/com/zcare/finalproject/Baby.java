@@ -24,6 +24,25 @@ public class Baby {
         this.parentPhone = new SimpleStringProperty(parentPhone);
     }
 
+    public Baby(int id, String name) {
+        this.id = new SimpleIntegerProperty(id);
+        this.name = new SimpleStringProperty(name);
+        this.dob = new SimpleStringProperty("");
+        this.gender = new SimpleStringProperty("");
+        this.bloodGroup = new SimpleStringProperty("");
+        this.parentName = new SimpleStringProperty("");
+        this.parentEmail = new SimpleStringProperty("");
+        this.parentPhone = new SimpleStringProperty("");
+    }
+
+    public int getId() { return id.get(); }
+    public String getName() { return name.get(); }
+    public String getDob() { return dob.get(); }
+    public String getGender() { return gender.get();}
+    public String getBloodGroup() { return bloodGroup.get(); }
+    public String getParentName() { return parentName.get(); }
+    public String getParentEmail() { return parentEmail.get(); }
+    public String getParentPhone() { return parentPhone.get(); }
     public IntegerProperty idProperty() { return id; }
     public StringProperty nameProperty() { return name; }
     public StringProperty dobProperty() { return dob; }
@@ -32,4 +51,10 @@ public class Baby {
     public StringProperty parentNameProperty() { return parentName; }
     public StringProperty parentEmailProperty() { return parentEmail; }
     public StringProperty parentPhoneProperty() { return parentPhone; }
+
+    @Override
+    public String toString() {
+        return nameProperty().get() + " (ID: " + idProperty().get() + ")";
+    }
+
 }

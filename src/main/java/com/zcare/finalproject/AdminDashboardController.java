@@ -136,7 +136,8 @@ public class AdminDashboardController implements Initializable {
                         rs.getString("email"),
                         rs.getString("name"),
                         rs.getString("phone"),
-                        rs.getString("specialization")
+                        rs.getString("specialization"),
+                        rs.getString("clinic_address")
                 ));
                 count++;
             }

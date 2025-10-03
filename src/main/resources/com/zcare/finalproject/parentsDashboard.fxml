@@ -60,7 +60,7 @@
                         <Image url="@images/family.png" />
                      </image>
                   </ImageView>
-                  <Button fx:id="availableDoctorsBtn" layoutX="18.0" layoutY="145.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Available Doctors" />
+                  <Button fx:id="availableDoctorsBtn" layoutX="18.0" layoutY="145.0" mnemonicParsing="false" onAction="#loadDoctorTable" prefHeight="31.0" prefWidth="151.0" text="Available Doctors" />
                   <Label layoutX="18.0" layoutY="119.0" prefHeight="19.0" prefWidth="98.0" text="Menus:">
                      <font>
                         <Font size="13.0" />
@@ -92,36 +92,61 @@
                </children></AnchorPane>
          </left>
          <center>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <AnchorPane fx:id="mainCenterPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <TableView fx:id="babyInformationTable" layoutX="14.0" layoutY="321.0" prefHeight="200.0" prefWidth="788.0">
-                    <columns>
-                      <TableColumn fx:id="babyid" prefWidth="50.0" text="Baby Id" />
-                      <TableColumn fx:id="babyname" prefWidth="123.0" text="Baby Name" />
-                        <TableColumn fx:id="dateofbirth" prefWidth="102.0" text="Date of Birth" />
-                        <TableColumn fx:id="babygender" prefWidth="74.0" text="Gender" />
-                        <TableColumn fx:id="bloodgroup" prefWidth="83.0" text="Blood Group" />
-                        <TableColumn fx:id="parentname" prefWidth="119.0" text="Parent Name" />
-                        <TableColumn fx:id="parentemail" prefWidth="119.0" text="Parent Email" />
-                        <TableColumn fx:id="parentphone" prefWidth="119.0" text="Parent Phone" />
-                    </columns>
-                  </TableView>
-                  <Label alignment="CENTER" layoutX="242.0" layoutY="4.0" prefHeight="21.0" prefWidth="314.0" text="Baby Information Form">
-                     <font>
-                        <Font name="Tahoma Bold" size="17.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="babyName" layoutX="14.0" layoutY="49.0" prefHeight="35.0" prefWidth="187.0" promptText="Baby Name" />
-                  <DatePicker fx:id="babyDOB" layoutX="14.0" layoutY="94.0" prefHeight="32.0" prefWidth="186.0" promptText="Date of Birth" />
-                  <ComboBox fx:id="babyGender" layoutX="14.0" layoutY="138.0" prefHeight="32.0" prefWidth="186.0" promptText="Gender" />
-                  <ComboBox fx:id="babyBloodGroup" layoutX="15.0" layoutY="181.0" prefHeight="32.0" prefWidth="186.0" promptText="Blood Group" />
-                  <TextField fx:id="babyHeight" layoutX="15.0" layoutY="226.0" prefHeight="35.0" prefWidth="187.0" promptText="Baby Name" text="Height" />
-                  <TextField fx:id="babyWeight" layoutX="14.0" layoutY="269.0" prefHeight="35.0" prefWidth="189.0" promptText="Baby Name" text="Weight" />
-                  <TextArea fx:id="alergiesNote" layoutX="230.0" layoutY="49.0" prefHeight="166.0" prefWidth="200.0" promptText="Alergies" />
-                  <TextArea fx:id="medicalConditionNote" layoutX="439.0" layoutY="49.0" prefHeight="166.0" prefWidth="200.0" promptText="Medical Conditions" />
-                  <TextArea fx:id="informationNote" layoutX="229.0" layoutY="226.0" prefHeight="77.0" prefWidth="409.0" promptText="Notes" />
-                  <Button fx:id="submitFormBtn" layoutX="663.0" layoutY="274.0" mnemonicParsing="false" onAction="#handleSubmitForm" prefHeight="25.0" prefWidth="139.0" text="Submit Form" />
-               </children></AnchorPane>
+                  <AnchorPane fx:id="babyInformationPane" prefHeight="200.0" prefWidth="200.0" visible="false">
+                     <children>
+                        <TableView fx:id="babyInformationTable" layoutX="14.0" layoutY="321.0" prefHeight="200.0" prefWidth="788.0">
+                          <columns>
+                            <TableColumn fx:id="babyid" prefWidth="50.0" text="Baby Id" />
+                            <TableColumn fx:id="babyname" prefWidth="123.0" text="Baby Name" />
+                              <TableColumn fx:id="dateofbirth" prefWidth="102.0" text="Date of Birth" />
+                              <TableColumn fx:id="babygender" prefWidth="74.0" text="Gender" />
+                              <TableColumn fx:id="bloodgroup" prefWidth="83.0" text="Blood Group" />
+                              <TableColumn fx:id="parentname" prefWidth="119.0" text="Parent Name" />
+                              <TableColumn fx:id="parentemail" prefWidth="119.0" text="Parent Email" />
+                              <TableColumn fx:id="parentphone" prefWidth="119.0" text="Parent Phone" />
+                          </columns>
+                        </TableView>
+                        <Label alignment="CENTER" layoutX="242.0" layoutY="4.0" prefHeight="21.0" prefWidth="314.0" text="Baby Information Form">
+                           <font>
+                              <Font name="Tahoma Bold" size="17.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="babyName" layoutX="14.0" layoutY="49.0" prefHeight="35.0" prefWidth="187.0" promptText="Baby Name" />
+                        <DatePicker fx:id="babyDOB" layoutX="14.0" layoutY="94.0" prefHeight="32.0" prefWidth="186.0" promptText="Date of Birth" />
+                        <ComboBox fx:id="babyGender" layoutX="14.0" layoutY="138.0" prefHeight="32.0" prefWidth="186.0" promptText="Gender" />
+                        <ComboBox fx:id="babyBloodGroup" layoutX="15.0" layoutY="181.0" prefHeight="32.0" prefWidth="186.0" promptText="Blood Group" />
+                        <TextField fx:id="babyHeight" layoutX="15.0" layoutY="226.0" prefHeight="35.0" prefWidth="187.0" promptText="Baby Name" text="Height" />
+                        <TextField fx:id="babyWeight" layoutX="14.0" layoutY="269.0" prefHeight="35.0" prefWidth="189.0" promptText="Baby Name" text="Weight" />
+                        <TextArea fx:id="alergiesNote" layoutX="230.0" layoutY="49.0" prefHeight="166.0" prefWidth="200.0" promptText="Alergies" />
+                        <TextArea fx:id="medicalConditionNote" layoutX="439.0" layoutY="49.0" prefHeight="166.0" prefWidth="200.0" promptText="Medical Conditions" />
+                        <TextArea fx:id="informationNote" layoutX="229.0" layoutY="226.0" prefHeight="77.0" prefWidth="409.0" promptText="Notes" />
+                        <Button fx:id="submitFormBtn" layoutX="663.0" layoutY="274.0" mnemonicParsing="false" onAction="#handleSubmitForm" prefHeight="25.0" prefWidth="139.0" text="Submit Form" />
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="availableDoctorsPane" layoutX="89.0" layoutY="123.0" prefHeight="553.0" prefWidth="810.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <TableView fx:id="availableDoctorsTable" layoutX="12.0" layoutY="74.0" prefHeight="397.0" prefWidth="787.0">
+                          <columns>
+                            <TableColumn fx:id="doctorsName" prefWidth="129.0" text="Doctor Name" />
+                            <TableColumn fx:id="doctorsEmail" prefWidth="142.0" text="Doctor Email" />
+                              <TableColumn fx:id="doctorsPhoneNo" prefWidth="122.0" text="Doctors Phone No" />
+                              <TableColumn fx:id="clinicAddress" prefWidth="285.0" text="Clinic Address" />
+                              <TableColumn fx:id="doctorSpecialization" prefWidth="108.0" text="Specialization" />
+                              <TableColumn fx:id="doctorsEmail1" minWidth="0.0" prefWidth="0.0" text="Doctor Email" />
+                          </columns>
+                        </TableView>
+                        <Label alignment="CENTER" layoutX="-12.0" layoutY="14.0" prefHeight="17.0" prefWidth="810.0" text="Abailable Doctors">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="bookAppointmentBtn" layoutX="292.0" layoutY="488.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="203.0" text="Book Appointment" />
+                     </children></AnchorPane>
+               </children>
+            </AnchorPane>
          </center>
       </BorderPane>
    </children>
