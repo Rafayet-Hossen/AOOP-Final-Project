@@ -128,13 +128,36 @@ public class ParentDashboardController implements Initializable {
     private Label loginParentId;
     @FXML
     private AnchorPane availableDoctorsPane;
+    @FXML
+    private AnchorPane babyInformationPane;
 
+    @FXML TextField requestTitle;
+    @FXML TextField locationName;
+    @FXML DatePicker fromDatePicker;
+    @FXML DatePicker toDatePeaker;
+    @FXML TextArea messageToDoner;
+    @FXML Button submitForm;
+
+    @FXML TableView<BloodRequest>bloodRequestTable;
+    @FXML TableColumn<BloodRequest,Integer>serialNo;
+    @FXML TableColumn<BloodRequest,String>parentName;
+    @FXML TableColumn<BloodRequest,String>acceptorName;
+    @FXML TableColumn<BloodRequest,String>acceptorPhoneNo;
+    @FXML TableColumn<BloodRequest,String>createdTime;
+    @FXML TableColumn<BloodRequest,String>requestStatus;
+    @FXML
+    private AnchorPane bloodRequestPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         babyGender.setItems(FXCollections.observableArrayList("Male", "Female", "Other"));
         babyBloodGroup.setItems(FXCollections.observableArrayList("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"));
-
+        serialNo.setCellValueFactory(data -> data.getValue().idProperty().asObject());
+        parentName.setCellValueFactory(data -> data.getValue().parentNameProperty());
+        acceptorName.setCellValueFactory(data -> data.getValue().acceptedByNameProperty());
+        acceptorPhoneNo.setCellValueFactory(data -> data.getValue().acceptedByPhoneProperty());
+        createdTime.setCellValueFactory(data -> data.getValue().createdAtProperty());
+        requestStatus.setCellValueFactory(data -> data.getValue().statusProperty());
         babyGender.getSelectionModel().clearSelection();
         babyBloodGroup.getSelectionModel().clearSelection();
         loadParentsInfo();
@@ -143,6 +166,33 @@ public class ParentDashboardController implements Initializable {
     private void loadParentsInfo() {
         loginParentId.setText(String.valueOf(SessionManager.loggedInParentId));
         loginParentsName.setText(SessionManager.loggedInParentsName);
+    }
+    @FXML
+    private void handleBabyDetailsView() {
+        babyInformationPane.setVisible(true);
+        availableDoctorsPane.setVisible(false);
+    }
+
+    @FXML
+    private void handleAvailableDoctorsView() {
+        availableDoctorsPane.setVisible(true);
+        babyInformationPane.setVisible(false);
+        loadDoctorTable();
+    }
+
+    @FXML
+    private void handleLogout() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("parentsLogin.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) logoutBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Parent Login");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Logout failed.");
+        }
     }
 
     @FXML
@@ -203,6 +253,8 @@ public class ParentDashboardController implements Initializable {
     }
 
     private void loadBabyTable() {
+        availableDoctorsPane.setVisible(false);
+        babyInformationPane.setVisible(true);
         ObservableList<Baby> list = FXCollections.observableArrayList();
 
         String sql = "SELECT babies.id, babies.name, babies.dob, babies.gender, babies.blood_group, " +
@@ -250,6 +302,7 @@ public class ParentDashboardController implements Initializable {
     private void loadDoctorTable() {
         ObservableList<Doctor> doctorList = FXCollections.observableArrayList();
         availableDoctorsPane.setVisible(true);
+        babyInformationPane.setVisible(false);
         String sql = "SELECT id, name, email, phone, clinic_address, specialization FROM doctors";
 
         try (Connection con = DBConnection.getConnection();
@@ -310,6 +363,104 @@ public class ParentDashboardController implements Initializable {
         }
     }
 
+    @FXML
+    private void handleBloodRequestSubmit() {
+        String title = requestTitle.getText().trim();
+        String location = locationName.getText().trim();
+        LocalDate fromDate = fromDatePicker.getValue();
+        LocalDate toDate = toDatePeaker.getValue();
+        String message = messageToDoner.getText().trim();
+        int parentId = SessionManager.loggedInParentId;
+
+        if (title.isEmpty() || location.isEmpty() || fromDate == null || toDate == null || message.isEmpty()) {
+            AlertUtil.errorAlert("Please fill in all the fields before submitting the request.");
+            return;
+        }
+
+        if (toDate.isBefore(fromDate)) {
+            AlertUtil.errorAlert("'To' date must be after 'From' date.");
+            return;
+        }
+
+        String sql = "INSERT INTO blood_donor_requests (parent_id, title, message, location_text, needed_from, needed_to, status) " +
+                "VALUES (?, ?, ?, ?, ?, ?, 'REQUESTED')";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, parentId);
+            ps.setString(2, title);
+            ps.setString(3, message);
+            ps.setString(4, location);
+            ps.setObject(5, fromDate.atStartOfDay());
+            ps.setObject(6, toDate.atTime(23, 59));
+
+            int rows = ps.executeUpdate();
+            if (rows > 0) {
+                AlertUtil.successAlert("Blood request submitted successfully.");
+                loadMyBloodRequests();
+                clearBloodRequestForm();
+            } else {
+                AlertUtil.errorAlert("Failed to submit blood request. Please try again.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Database error: " + e.getMessage());
+        }
+    }
+
+    private void loadMyBloodRequests() {
+        ObservableList<BloodRequest> list = FXCollections.observableArrayList();
+
+        String sql = "SELECT r.id, p.name AS parent_name, d.name AS donor_name, d.phone AS donor_phone, " +
+                "r.created_at, r.status " +
+                "FROM blood_donor_requests r " +
+                "JOIN parents p ON r.parent_id = p.id " +
+                "LEFT JOIN blood_donors d ON r.blood_donor_id = d.id " +
+                "WHERE r.parent_id = ? AND r.needed_to >= NOW()";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, SessionManager.loggedInParentId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(new BloodRequest(
+                        rs.getInt("id"),
+                        rs.getString("parent_name"),
+                        rs.getString("donor_name") != null ? rs.getString("donor_name") : "Pending",
+                        rs.getString("donor_phone") != null ? rs.getString("donor_phone") : "-",
+                        rs.getString("created_at"),
+                        rs.getString("status")
+                ));
+            }
+
+            bloodRequestTable.setItems(list);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Failed to load blood requests.");
+        }
+    }
+
+    @FXML
+    private void handleAvailableBloodDonersView() {
+        babyInformationPane.setVisible(false);
+        availableDoctorsPane.setVisible(false);
+        bloodRequestPane.setVisible(true);
+        loadMyBloodRequests();
+    }
+
+
+    private void clearBloodRequestForm() {
+        requestTitle.clear();
+        locationName.clear();
+        fromDatePicker.setValue(null);
+        toDatePeaker.setValue(null);
+        messageToDoner.clear();
+    }
 
     private void clearForm() {
         babyName.clear();
