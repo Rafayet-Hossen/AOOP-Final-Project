@@ -148,6 +148,24 @@ public class ParentDashboardController implements Initializable {
     @FXML
     private AnchorPane bloodRequestPane;
 
+    @FXML private AnchorPane babySetterRequestPane;
+
+    @FXML private TextField setterRequestTitle;
+    @FXML private TextField setterLocationName;
+    @FXML private DatePicker fromDatePickerSetter;
+    @FXML private DatePicker toDatePeakerSetter;
+    @FXML private TextArea messageToSetter;
+    @FXML private Button submitSetterRequestForm;
+
+    @FXML private TableView<BabySetterRequest> setterRequestTable;
+    @FXML private TableColumn<BabySetterRequest, Integer> setterSerialNo;
+    @FXML private TableColumn<BabySetterRequest, String> requestParentName;
+    @FXML private TableColumn<BabySetterRequest, String> setterAcceptedBy;
+    @FXML private TableColumn<BabySetterRequest, String> setterAcceptedByNo;
+    @FXML private TableColumn<BabySetterRequest, String> setterRequestCreatedAt;
+    @FXML private TableColumn<BabySetterRequest, String> setterRequestStatus;
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         babyGender.setItems(FXCollections.observableArrayList("Male", "Female", "Other"));
@@ -158,26 +176,53 @@ public class ParentDashboardController implements Initializable {
         acceptorPhoneNo.setCellValueFactory(data -> data.getValue().acceptedByPhoneProperty());
         createdTime.setCellValueFactory(data -> data.getValue().createdAtProperty());
         requestStatus.setCellValueFactory(data -> data.getValue().statusProperty());
+        setterSerialNo.setCellValueFactory(data -> data.getValue().idProperty().asObject());
+        requestParentName.setCellValueFactory(data -> data.getValue().parentNameProperty());
+        setterAcceptedBy.setCellValueFactory(data -> data.getValue().acceptedByNameProperty());
+        setterAcceptedByNo.setCellValueFactory(data -> data.getValue().acceptedByPhoneProperty());
+        setterRequestCreatedAt.setCellValueFactory(data -> data.getValue().createdAtProperty());
+        setterRequestStatus.setCellValueFactory(data -> data.getValue().statusProperty());
+
         babyGender.getSelectionModel().clearSelection();
         babyBloodGroup.getSelectionModel().clearSelection();
         loadParentsInfo();
         loadBabyTable();
     }
-    private void loadParentsInfo() {
-        loginParentId.setText(String.valueOf(SessionManager.loggedInParentId));
-        loginParentsName.setText(SessionManager.loggedInParentsName);
-    }
-    @FXML
-    private void handleBabyDetailsView() {
-        babyInformationPane.setVisible(true);
+    private void showOnlyPane(AnchorPane paneToShow) {
+        babyInformationPane.setVisible(false);
         availableDoctorsPane.setVisible(false);
+        bloodRequestPane.setVisible(false);
+        babySetterRequestPane.setVisible(false);
+
+        if (paneToShow != null) paneToShow.setVisible(true);
+    }
+
+    @FXML
+    private void handleAvailableBabySetterView() {
+        showOnlyPane(babySetterRequestPane);
+        loadMySetterRequests();
+    }
+
+    @FXML
+    private void handleAvailableBloodDonersView() {
+        showOnlyPane(bloodRequestPane);
+        loadMyBloodRequests();
     }
 
     @FXML
     private void handleAvailableDoctorsView() {
-        availableDoctorsPane.setVisible(true);
-        babyInformationPane.setVisible(false);
+        showOnlyPane(availableDoctorsPane);
         loadDoctorTable();
+    }
+
+    @FXML
+    private void handleBabyDetailsView() {
+        showOnlyPane(babyInformationPane);
+    }
+
+    private void loadParentsInfo() {
+        loginParentId.setText(String.valueOf(SessionManager.loggedInParentId));
+        loginParentsName.setText(SessionManager.loggedInParentsName);
     }
 
     @FXML
@@ -446,12 +491,87 @@ public class ParentDashboardController implements Initializable {
     }
 
     @FXML
-    private void handleAvailableBloodDonersView() {
-        babyInformationPane.setVisible(false);
-        availableDoctorsPane.setVisible(false);
-        bloodRequestPane.setVisible(true);
-        loadMyBloodRequests();
+    private void handleSetterRequestSubmit() {
+        String title = setterRequestTitle.getText().trim();
+        String location = setterLocationName.getText().trim();
+        LocalDate from = fromDatePickerSetter.getValue();
+        LocalDate to = toDatePeakerSetter.getValue();
+        String message = messageToSetter.getText().trim();
+
+        if (title.isEmpty() || location.isEmpty() || from == null || to == null || message.isEmpty()) {
+            AlertUtil.errorAlert("Please complete all fields.");
+            return;
+        }
+
+        if (to.isBefore(from)) {
+            AlertUtil.errorAlert("'To' date must be after 'From' date.");
+            return;
+        }
+
+        String sql = "INSERT INTO baby_setter_requests (parent_id, title, message, location_text, needed_from, needed_to, status) " +
+                "VALUES (?, ?, ?, ?, ?, ?, 'REQUESTED')";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, SessionManager.loggedInParentId);
+            ps.setString(2, title);
+            ps.setString(3, message);
+            ps.setString(4, location);
+            ps.setObject(5, from.atStartOfDay());
+            ps.setObject(6, to.atTime(23, 59));
+
+            int result = ps.executeUpdate();
+            if (result > 0) {
+                AlertUtil.successAlert("Setter request submitted!");
+                clearSetterRequestForm();
+                loadMySetterRequests();
+            } else {
+                AlertUtil.errorAlert("Submission failed.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Error: " + e.getMessage());
+        }
     }
+
+
+    private void loadMySetterRequests() {
+        ObservableList<BabySetterRequest> list = FXCollections.observableArrayList();
+
+        String sql = "SELECT r.id, p.name AS parent_name, s.name AS setter_name, s.phone AS setter_phone, " +
+                "r.created_at, r.status " +
+                "FROM baby_setter_requests r " +
+                "JOIN parents p ON r.parent_id = p.id " +
+                "LEFT JOIN baby_setters s ON r.baby_setter_id = s.id " +  // ← Fixed line
+                "WHERE r.parent_id = ? AND r.needed_to >= NOW()";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, SessionManager.loggedInParentId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(new BabySetterRequest(
+                        rs.getInt("id"),
+                        rs.getString("parent_name"),
+                        rs.getString("setter_name") != null ? rs.getString("setter_name") : "Pending",
+                        rs.getString("setter_phone") != null ? rs.getString("setter_phone") : "-",
+                        rs.getString("created_at"),
+                        rs.getString("status")
+                ));
+            }
+
+            setterRequestTable.setItems(list);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Failed to load requests.");
+        }
+    }
+
 
 
     private void clearBloodRequestForm() {
@@ -461,6 +581,15 @@ public class ParentDashboardController implements Initializable {
         toDatePeaker.setValue(null);
         messageToDoner.clear();
     }
+
+    private void clearSetterRequestForm() {
+        setterRequestTitle.clear();
+        setterLocationName.clear();
+        fromDatePickerSetter.setValue(null);
+        toDatePeakerSetter.setValue(null);
+        messageToSetter.clear();
+    }
+
 
     private void clearForm() {
         babyName.clear();

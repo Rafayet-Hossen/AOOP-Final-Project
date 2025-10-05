@@ -67,7 +67,7 @@
                      </font>
                   </Label>
                   <Button fx:id="availableBloodDonersBtn" layoutX="18.0" layoutY="183.0" mnemonicParsing="false" onAction="#handleAvailableBloodDonersView" prefHeight="30.0" prefWidth="151.0" text="Blood Request" />
-                  <Button fx:id="availableBabySetterBtn" layoutX="18.0" layoutY="222.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Hire Baby Setter" />
+                  <Button fx:id="availableBabySetterBtn" layoutX="18.0" layoutY="222.0" mnemonicParsing="false" onAction="#handleAvailableBabySetterView" prefHeight="31.0" prefWidth="151.0" text="Hire Baby Setter" />
                   <Button fx:id="babyDetailsBtn" layoutX="18.0" layoutY="261.0" mnemonicParsing="false" onAction="#handleBabyDetailsView" prefHeight="31.0" prefWidth="151.0" text="Baby Details" />
                   <Button fx:id="doctorsTipsBtn" layoutX="18.0" layoutY="299.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Doctors Tips" />
                   <Button fx:id="appointmentsStatusBtn" layoutX="18.0" layoutY="337.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Emergency Contact" />
@@ -202,6 +202,67 @@
                               <TableColumn fx:id="createdTime" prefWidth="160.0" text="Created At" />
                               <TableColumn fx:id="requestStatus" prefWidth="90.0" text="Status" />
                           </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="babySetterRequestPane" layoutX="2.0" layoutY="2.0" prefHeight="553.0" prefWidth="810.0" visible="false">
+                     <children>
+                        <Label alignment="CENTER" layoutX="1.0" layoutY="14.0" prefHeight="17.0" prefWidth="809.0" text="Setter Request Form">
+                           <font>
+                              <Font name="System Bold" size="29.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="setterRequestTitle" layoutX="95.0" layoutY="92.0" prefHeight="43.0" prefWidth="336.0" promptText="Title For Your Request">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <Label layoutX="18.0" layoutY="101.0" prefHeight="17.0" prefWidth="47.0" text="Title:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="setterLocationName" layoutX="95.0" layoutY="148.0" prefHeight="43.0" prefWidth="336.0" promptText="E.g: Hospital">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <Label layoutX="18.0" layoutY="157.0" prefHeight="25.0" prefWidth="69.0" text="Location:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <DatePicker fx:id="fromDatePickerSetter" layoutX="95.0" layoutY="210.0" prefHeight="40.0" prefWidth="150.0" />
+                        <DatePicker fx:id="toDatePeakerSetter" layoutX="281.0" layoutY="210.0" prefHeight="40.0" prefWidth="150.0" />
+                        <Label layoutX="18.0" layoutY="218.0" prefHeight="25.0" prefWidth="69.0" text="From:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="252.0" layoutY="218.0" prefHeight="25.0" prefWidth="23.0" text="To:">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <TextArea fx:id="messageToSetter" layoutX="458.0" layoutY="90.0" prefHeight="160.0" prefWidth="335.0" promptText="Message">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </TextArea>
+                        <Button fx:id="submitSetterRequestForm" layoutX="654.0" layoutY="259.0" mnemonicParsing="false" onAction="#handleSetterRequestSubmit" prefHeight="31.0" prefWidth="138.0" text="Submit Request">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+                        <TableView fx:id="setterRequestTable" layoutX="18.0" layoutY="326.0" prefHeight="200.0" prefWidth="775.0">
+                           <columns>
+                              <TableColumn fx:id="setterSerialNo" prefWidth="57.0" text="Serial No" />
+                              <TableColumn fx:id="requestParentName" prefWidth="139.0" text="Parent Name" />
+                              <TableColumn fx:id="setterAcceptedBy" prefWidth="167.0" text="Accepted By" />
+                              <TableColumn fx:id="setterAcceptedByNo" prefWidth="166.0" text="Doners Phone No" />
+                              <TableColumn fx:id="setterRequestCreatedAt" prefWidth="160.0" text="Created At" />
+                              <TableColumn fx:id="setterRequestStatus" prefWidth="90.0" text="Status" />
+                           </columns>
                         </TableView>
                      </children>
                   </AnchorPane>
