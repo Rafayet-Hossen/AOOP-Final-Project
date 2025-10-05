@@ -214,7 +214,8 @@ public class DonersController extends PageUtil implements Initializable {
 
             if (rs.next()) {
                 AlertUtil.successAlert("Login successful!");
-
+                SessionManager.loggedInDonorId = rs.getInt("id");
+                SessionManager.loggedInDonorName = rs.getString("name");
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("donerDashboard.fxml"));
                 Parent root = fxmlLoader.load();
                 Stage stage = (Stage) donerLoginAccountBtn.getScene().getWindow();

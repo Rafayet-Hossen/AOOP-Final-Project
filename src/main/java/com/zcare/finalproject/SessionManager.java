@@ -7,4 +7,6 @@ public class SessionManager {
 
     public static int loggedInParentId;
     public static String loggedInParentsName;
+    public static int loggedInDonorId;
+    public static String loggedInDonorName;
 }
