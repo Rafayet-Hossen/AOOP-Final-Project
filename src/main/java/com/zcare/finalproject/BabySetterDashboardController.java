@@ -69,15 +69,22 @@ public class BabySetterDashboardController implements Initializable {
         ObservableList<BabySetterRequestRow> list = FXCollections.observableArrayList();
 
         String sql = """
-            SELECT r.id, p.name, p.phone, r.message
+            SELECT
+                r.id,
+                p.name AS parent_name,
+                COALESCE(GROUP_CONCAT(DISTINCT bs.name SEPARATOR ', '), 'Pending') AS setter_names,
+                COALESCE(GROUP_CONCAT(DISTINCT bs.phone SEPARATOR ', '), '-') AS setter_phones,
+                r.created_at,
+                r.status
             FROM baby_setter_requests r
             JOIN parents p ON r.parent_id = p.id
-            WHERE r.status = 'REQUESTED'
-              AND r.needed_to >= NOW()
-              AND r.id NOT IN (
-                  SELECT request_id FROM baby_setter_accepts WHERE setter_id = ?
-              )
+            LEFT JOIN baby_setter_accepts bsa ON r.id = bsa.request_id
+            LEFT JOIN baby_setters bs ON bsa.setter_id = bs.id
+            WHERE r.parent_id = ? AND r.needed_to >= NOW()
+            GROUP BY r.id, p.name, r.created_at, r.status
+            ORDER BY r.created_at DESC
         """;
+
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {

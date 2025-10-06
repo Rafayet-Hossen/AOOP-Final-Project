@@ -458,28 +458,38 @@ public class ParentDashboardController implements Initializable {
     private void loadMyBloodRequests() {
         ObservableList<BloodRequest> list = FXCollections.observableArrayList();
 
-        String sql = "SELECT r.id, p.name AS parent_name, d.name AS donor_name, d.phone AS donor_phone, " +
-                "r.created_at, r.status " +
-                "FROM blood_donor_requests r " +
-                "JOIN parents p ON r.parent_id = p.id " +
-                "LEFT JOIN blood_donors d ON r.blood_donor_id = d.id " +
-                "WHERE r.parent_id = ? AND r.needed_to >= NOW()";
+        String sql = """
+        SELECT
+            r.id,
+            p.name AS parent_name,
+            COALESCE(GROUP_CONCAT(DISTINCT d.name SEPARATOR ', '), 'Pending') AS donor_names,
+            COALESCE(GROUP_CONCAT(DISTINCT d.phone SEPARATOR ', '), '-') AS donor_phones,
+            r.created_at,
+            r.status
+        FROM blood_donor_requests r
+        JOIN parents p ON r.parent_id = p.id
+        LEFT JOIN blood_donor_accepts a ON r.id = a.request_id
+        LEFT JOIN blood_donors d ON a.donor_id = d.id
+        WHERE r.parent_id = ? AND r.needed_to >= NOW()
+        GROUP BY r.id, p.name, r.created_at, r.status
+        ORDER BY r.created_at DESC
+    """;
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, SessionManager.loggedInParentId);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                list.add(new BloodRequest(
-                        rs.getInt("id"),
-                        rs.getString("parent_name"),
-                        rs.getString("donor_name") != null ? rs.getString("donor_name") : "Pending",
-                        rs.getString("donor_phone") != null ? rs.getString("donor_phone") : "-",
-                        rs.getString("created_at"),
-                        rs.getString("status")
-                ));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new BloodRequest(
+                            rs.getInt("id"),
+                            rs.getString("parent_name"),
+                            rs.getString("donor_names"),
+                            rs.getString("donor_phones"),
+                            rs.getString("created_at"),
+                            rs.getString("status")
+                    ));
+                }
             }
 
             bloodRequestTable.setItems(list);
@@ -489,6 +499,7 @@ public class ParentDashboardController implements Initializable {
             AlertUtil.errorAlert("Failed to load blood requests.");
         }
     }
+
 
     @FXML
     private void handleSetterRequestSubmit() {
@@ -549,8 +560,6 @@ public class ParentDashboardController implements Initializable {
             LEFT JOIN baby_setters bs ON bsa.setter_id = bs.id
             WHERE r.parent_id = ? AND r.needed_to >= NOW()
         """;
-
-
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
