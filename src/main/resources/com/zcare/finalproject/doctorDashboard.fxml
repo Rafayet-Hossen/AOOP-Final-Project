@@ -1,16 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zcare.finalproject.DoctorDashboardController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zcare.finalproject.DoctorDashboardController">
    <children>
-      <Label text="Welcome to Doctor Dashboard">
-         <font>
-            <Font name="Tahoma" size="38.0" />
-         </font>
-      </Label>
+      <BorderPane prefHeight="200.0" prefWidth="200.0">
+         <left>
+            <AnchorPane prefHeight="552.0" prefWidth="201.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="83.0" fitWidth="87.0" layoutX="55.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/doctor.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="28.0" layoutY="111.0" text="Doctor ID:" />
+                  <Label layoutX="93.0" layoutY="111.0" text="0" />
+                  <Label layoutX="29.0" layoutY="135.0" text="Menus:" />
+                  <Button layoutX="28.0" layoutY="160.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="145.0" text="Pending Appointments" />
+                  <Button layoutX="28.0" layoutY="200.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="145.0" text="Previous Appointments" />
+                  <Button layoutX="28.0" layoutY="242.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="145.0" text="Generate Report" />
+                  <Button layoutX="28.0" layoutY="284.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="145.0" text="Send Report" />
+                  <Button layoutX="28.0" layoutY="326.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="145.0" text="Review Patients" />
+                  <Button layoutX="28.0" layoutY="368.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="145.0" text="Share Tips" />
+                  <Button layoutX="28.0" layoutY="411.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="145.0" text="Chats" />
+                  <Label layoutX="30.0" layoutY="463.0" text="Profile:" />
+                  <Button layoutX="28.0" layoutY="491.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="145.0" text="Update Profile" />
+               </children>
+            </AnchorPane>
+         </left>
+         <top>
+            <AnchorPane prefHeight="48.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Circle fill="DODGERBLUE" layoutX="1003.0" layoutY="26.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Label layoutX="1030.0" layoutY="16.0" text="Active">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Circle fill="#17d340" layoutX="1076.0" layoutY="26.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Button layoutX="745.0" layoutY="12.0" mnemonicParsing="false" text="Logout" />
+                  <Label layoutX="813.0" layoutY="16.0" text="Welcome," />
+                  <Label layoutX="866.0" layoutY="17.0" prefHeight="17.0" prefWidth="101.0" text="User1234" />
+                  <Label layoutX="632.0" layoutY="16.0" text="CurrentTimedate" />
+                  <Label layoutX="14.0" layoutY="9.0" prefHeight="30.0" prefWidth="271.0" text="Doctors Dashboard">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </top>
+         <center>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <AnchorPane fx:id="pendingAppointmentsPane" layoutX="303.0" layoutY="162.0" prefHeight="552.0" prefWidth="899.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+         </center>
+      </BorderPane>
    </children>
 </StackPane>
