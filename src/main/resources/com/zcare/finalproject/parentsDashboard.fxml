@@ -70,7 +70,7 @@
                   <Button fx:id="availableBabySetterBtn" layoutX="18.0" layoutY="222.0" mnemonicParsing="false" onAction="#handleAvailableBabySetterView" prefHeight="31.0" prefWidth="151.0" text="Hire Baby Setter" />
                   <Button fx:id="babyDetailsBtn" layoutX="18.0" layoutY="261.0" mnemonicParsing="false" onAction="#handleBabyDetailsView" prefHeight="31.0" prefWidth="151.0" text="Baby Details" />
                   <Button fx:id="doctorsTipsBtn" layoutX="18.0" layoutY="299.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Doctors Tips" />
-                  <Button fx:id="appointmentsStatusBtn" layoutX="18.0" layoutY="337.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Emergency Contact" />
+                  <Button fx:id="emergencyContactBtn" layoutX="18.0" layoutY="337.0" mnemonicParsing="false" onAction="#handleEmergencyContactView" prefHeight="31.0" prefWidth="151.0" text="Emergency Contact" />
                   <Button fx:id="chatsBtn" layoutX="18.0" layoutY="375.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Chats" />
                   <Button fx:id="updateProfileBtn" layoutX="18.0" layoutY="490.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Update Profile" />
                   <Label layoutX="19.0" layoutY="464.0" prefHeight="19.0" prefWidth="48.0" text="Profile:">
@@ -264,6 +264,27 @@
                               <TableColumn fx:id="setterRequestStatus" prefWidth="90.0" text="Status" />
                            </columns>
                         </TableView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="emergencyContactPane" layoutX="137.0" layoutY="161.0" prefHeight="555.0" prefWidth="812.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label alignment="CENTER" layoutX="2.0" layoutY="14.0" prefHeight="17.0" prefWidth="808.0" text="Emergency Contact">
+                           <font>
+                              <Font name="System Bold" size="28.0" />
+                           </font>
+                        </Label>
+                        <TableView fx:id="emergencyContactTable" layoutX="26.0" layoutY="132.0" prefHeight="389.0" prefWidth="760.0">
+                          <columns>
+                            <TableColumn fx:id="serviceId" prefWidth="51.0" text="ID" />
+                            <TableColumn fx:id="serviceName" prefWidth="126.0" text="Name" />
+                              <TableColumn fx:id="serviceContactNo" prefWidth="136.0" text="Contact No" />
+                              <TableColumn fx:id="serviceType" prefWidth="98.0" text="Type" />
+                              <TableColumn fx:id="serviceLocation" prefWidth="96.0" text="Location" />
+                              <TableColumn fx:id="serviceAddress" prefWidth="252.0" text="Address" />
+                          </columns>
+                        </TableView>
+                        <ComboBox fx:id="filterByLocation" layoutX="636.0" layoutY="93.0" onAction="#applyEmergencyFilter" prefWidth="150.0" />
+                        <ComboBox fx:id="filterByType" layoutX="461.0" layoutY="93.0" onAction="#applyEmergencyFilter" prefWidth="150.0" />
                      </children>
                   </AnchorPane>
                </children>

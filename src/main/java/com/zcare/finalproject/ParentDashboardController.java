@@ -165,6 +165,21 @@ public class ParentDashboardController implements Initializable {
     @FXML private TableColumn<BabySetterRequest, String> setterRequestCreatedAt;
     @FXML private TableColumn<BabySetterRequest, String> setterRequestStatus;
 
+    @FXML private AnchorPane emergencyContactPane;
+    @FXML private TableView<EmergencyContact> emergencyContactTable;
+    @FXML private TableColumn<EmergencyContact, Integer> serviceId;
+    @FXML private TableColumn<EmergencyContact, String> serviceName;
+    @FXML private TableColumn<EmergencyContact, String> serviceContactNo;
+    @FXML private TableColumn<EmergencyContact, String> serviceType;
+    @FXML private TableColumn<EmergencyContact, String> serviceLocation;
+    @FXML private TableColumn<EmergencyContact, String> serviceAddress;
+
+    @FXML private ComboBox<String> filterByLocation;
+    @FXML private ComboBox<String> filterByType;
+
+    private ObservableList<EmergencyContact> emergencyList = FXCollections.observableArrayList();
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -218,6 +233,20 @@ public class ParentDashboardController implements Initializable {
     @FXML
     private void handleBabyDetailsView() {
         showOnlyPane(babyInformationPane);
+    }
+
+    @FXML
+    private void handleEmergencyContactView() {
+        // Hide all other panes
+        babyInformationPane.setVisible(false);
+        availableDoctorsPane.setVisible(false);
+        bloodRequestPane.setVisible(false);
+        babySetterRequestPane.setVisible(false);
+
+        // Show emergency contact pane
+        emergencyContactPane.setVisible(true);
+
+        loadEmergencyContacts(); // load contacts
     }
 
     private void loadParentsInfo() {
@@ -394,7 +423,7 @@ public class ParentDashboardController implements Initializable {
             Parent root = loader.load();
 
             BookAppointmentController controller = loader.getController();
-            controller.setDoctor(selected.getId()); // pass selected doctor ID
+            controller.setDoctor(selected.getId());
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
@@ -586,6 +615,63 @@ public class ParentDashboardController implements Initializable {
         }
     }
 
+    private void loadEmergencyContacts() {
+        emergencyList.clear();
+        filterByType.getItems().clear();
+        filterByLocation.getItems().clear();
+
+        String sql = "SELECT id, name, contact_number, type, location, address FROM emergency_contacts";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                emergencyList.add(new EmergencyContact(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("contact_number"),
+                        rs.getString("type"),
+                        rs.getString("location"),
+                        rs.getString("address")
+                ));
+            }
+
+            serviceId.setCellValueFactory(data -> data.getValue().idProperty().asObject());
+            serviceName.setCellValueFactory(data -> data.getValue().nameProperty());
+            serviceContactNo.setCellValueFactory(data -> data.getValue().contactNumberProperty());
+            serviceType.setCellValueFactory(data -> data.getValue().typeProperty());
+            serviceLocation.setCellValueFactory(data -> data.getValue().locationProperty());
+            serviceAddress.setCellValueFactory(data -> data.getValue().addressProperty());
+
+            emergencyContactTable.setItems(emergencyList);
+
+            filterByType.getItems().add("All");
+            filterByLocation.getItems().add("All");
+            emergencyList.stream().map(EmergencyContact::getType).distinct().forEach(filterByType.getItems()::add);
+            emergencyList.stream().map(EmergencyContact::getLocation).distinct().forEach(filterByLocation.getItems()::add);
+
+            filterByType.getSelectionModel().select("All");
+            filterByLocation.getSelectionModel().select("All");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Failed to load emergency contacts.");
+        }
+    }
+
+    @FXML
+    private void applyEmergencyFilter() {
+        String selectedType = filterByType.getValue();
+        String selectedLocation = filterByLocation.getValue();
+
+        ObservableList<EmergencyContact> filteredList = emergencyList.filtered(item ->
+                ("All".equals(selectedType) || item.getType().equalsIgnoreCase(selectedType)) &&
+                        ("All".equals(selectedLocation) || item.getLocation().equalsIgnoreCase(selectedLocation))
+        );
+
+        emergencyContactTable.setItems(filteredList);
+    }
 
 
     private void clearBloodRequestForm() {
@@ -603,7 +689,6 @@ public class ParentDashboardController implements Initializable {
         toDatePeakerSetter.setValue(null);
         messageToSetter.clear();
     }
-
 
     private void clearForm() {
         babyName.clear();
