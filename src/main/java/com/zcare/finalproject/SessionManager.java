@@ -9,4 +9,7 @@ public class SessionManager {
     public static String loggedInParentsName;
     public static int loggedInDonorId;
     public static String loggedInDonorName;
+
+    public static int loggedInSetterId;
+    public static String loggedInSetterName;
 }

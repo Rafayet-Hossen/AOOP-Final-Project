@@ -540,12 +540,17 @@ public class ParentDashboardController implements Initializable {
     private void loadMySetterRequests() {
         ObservableList<BabySetterRequest> list = FXCollections.observableArrayList();
 
-        String sql = "SELECT r.id, p.name AS parent_name, s.name AS setter_name, s.phone AS setter_phone, " +
-                "r.created_at, r.status " +
-                "FROM baby_setter_requests r " +
-                "JOIN parents p ON r.parent_id = p.id " +
-                "LEFT JOIN baby_setters s ON r.baby_setter_id = s.id " +  // ← Fixed line
-                "WHERE r.parent_id = ? AND r.needed_to >= NOW()";
+        String sql = """
+            SELECT r.id, p.name AS parent_name, bs.name AS setter_name, bs.phone AS setter_phone,
+                   r.created_at, r.status
+            FROM baby_setter_requests r
+            JOIN parents p ON r.parent_id = p.id
+            LEFT JOIN baby_setter_accepts bsa ON r.id = bsa.request_id
+            LEFT JOIN baby_setters bs ON bsa.setter_id = bs.id
+            WHERE r.parent_id = ? AND r.needed_to >= NOW()
+        """;
+
+
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {

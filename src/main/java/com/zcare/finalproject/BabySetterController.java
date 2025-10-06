@@ -207,7 +207,8 @@ public class BabySetterController extends PageUtil implements Initializable {
 
             if (rs.next()) {
                 AlertUtil.successAlert("Login successful!");
-
+                SessionManager.loggedInSetterId = rs.getInt("id");
+                SessionManager.loggedInSetterName = rs.getString("name");
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("babySetterDashboard.fxml"));
                 Parent root = fxmlLoader.load();
                 Stage stage = (Stage) babySetterLoginBtn.getScene().getWindow();
