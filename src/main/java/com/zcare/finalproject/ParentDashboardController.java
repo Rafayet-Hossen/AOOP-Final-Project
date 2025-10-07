@@ -116,9 +116,6 @@ public class ParentDashboardController implements Initializable {
     private TextArea medicalConditionNote;
 
     @FXML
-    private Button notificationsBtn;
-
-    @FXML
     private Button submitFormBtn;
 
     @FXML
@@ -177,6 +174,16 @@ public class ParentDashboardController implements Initializable {
     @FXML private ComboBox<String> filterByLocation;
     @FXML private ComboBox<String> filterByType;
 
+    @FXML private AnchorPane appointmentStatusPane;
+    @FXML private TableView<AppointmentStatusRow> appointmentStatusTable;
+    @FXML private TableColumn<AppointmentStatusRow, Integer> appointmentId;
+    @FXML private TableColumn<AppointmentStatusRow, String> appointmentBabyName;
+    @FXML private TableColumn<AppointmentStatusRow, String> doctorName;
+    @FXML private TableColumn<AppointmentStatusRow, String> scheduledAt;
+    @FXML private TableColumn<AppointmentStatusRow, String> status;
+    @FXML private TableColumn<AppointmentStatusRow, String> doctorNote;
+
+
     private ObservableList<EmergencyContact> emergencyList = FXCollections.observableArrayList();
 
 
@@ -203,25 +210,24 @@ public class ParentDashboardController implements Initializable {
         loadParentsInfo();
         loadBabyTable();
     }
+
     private void showOnlyPane(AnchorPane paneToShow) {
         babyInformationPane.setVisible(false);
         availableDoctorsPane.setVisible(false);
         bloodRequestPane.setVisible(false);
         babySetterRequestPane.setVisible(false);
+        emergencyContactPane.setVisible(false);
+        appointmentStatusPane.setVisible(false);
 
-        if (paneToShow != null) paneToShow.setVisible(true);
+        if (paneToShow != null) {
+            paneToShow.setVisible(true);
+        }
     }
 
     @FXML
-    private void handleAvailableBabySetterView() {
-        showOnlyPane(babySetterRequestPane);
-        loadMySetterRequests();
-    }
-
-    @FXML
-    private void handleAvailableBloodDonersView() {
-        showOnlyPane(bloodRequestPane);
-        loadMyBloodRequests();
+    private void handleBabyDetailsView() {
+        showOnlyPane(babyInformationPane);
+        loadBabyTable();
     }
 
     @FXML
@@ -231,22 +237,27 @@ public class ParentDashboardController implements Initializable {
     }
 
     @FXML
-    private void handleBabyDetailsView() {
-        showOnlyPane(babyInformationPane);
+    private void handleAvailableBloodDonersView() {
+        showOnlyPane(bloodRequestPane);
+        loadMyBloodRequests();
+    }
+
+    @FXML
+    private void handleAvailableBabySetterView() {
+        showOnlyPane(babySetterRequestPane);
+        loadMySetterRequests();
     }
 
     @FXML
     private void handleEmergencyContactView() {
-        // Hide all other panes
-        babyInformationPane.setVisible(false);
-        availableDoctorsPane.setVisible(false);
-        bloodRequestPane.setVisible(false);
-        babySetterRequestPane.setVisible(false);
+        showOnlyPane(emergencyContactPane);
+        loadEmergencyContacts();
+    }
 
-        // Show emergency contact pane
-        emergencyContactPane.setVisible(true);
-
-        loadEmergencyContacts(); // load contacts
+    @FXML
+    private void handleAppointmentsStatusView() {
+        showOnlyPane(appointmentStatusPane);
+        loadParentAppointments();
     }
 
     private void loadParentsInfo() {
@@ -672,6 +683,57 @@ public class ParentDashboardController implements Initializable {
 
         emergencyContactTable.setItems(filteredList);
     }
+
+    private void loadParentAppointments() {
+        ObservableList<AppointmentStatusRow> list = FXCollections.observableArrayList();
+
+        String sql = """
+        SELECT 
+            a.id,
+            b.name AS baby_name,
+            d.name AS doctor_name,
+            a.scheduled_at,
+            a.status,
+            a.doctor_note
+        FROM appointments a
+        JOIN babies b ON a.baby_id = b.id
+        JOIN doctors d ON a.doctor_id = d.id
+        WHERE a.parent_id = ?
+        ORDER BY a.scheduled_at DESC
+    """;
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, SessionManager.loggedInParentId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(new AppointmentStatusRow(
+                        rs.getInt("id"),
+                        rs.getString("baby_name"),
+                        rs.getString("doctor_name"),
+                        rs.getString("scheduled_at"),
+                        rs.getString("status"),
+                        rs.getString("doctor_note")
+                ));
+            }
+
+            appointmentId.setCellValueFactory(data -> data.getValue().idProperty().asObject());
+            appointmentBabyName.setCellValueFactory(data -> data.getValue().babyNameProperty());
+            doctorName.setCellValueFactory(data -> data.getValue().doctorNameProperty());
+            scheduledAt.setCellValueFactory(data -> data.getValue().scheduledAtProperty());
+            status.setCellValueFactory(data -> data.getValue().statusProperty());
+            doctorNote.setCellValueFactory(data -> data.getValue().doctorNoteProperty());
+
+            appointmentStatusTable.setItems(list);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Failed to load appointment status: " + e.getMessage());
+        }
+    }
+
 
 
     private void clearBloodRequestForm() {

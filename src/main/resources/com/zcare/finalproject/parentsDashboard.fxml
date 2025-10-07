@@ -78,7 +78,7 @@
                         <Font size="13.0" />
                      </font>
                   </Label>
-                  <Button fx:id="notificationsBtn" layoutX="18.0" layoutY="415.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Notifications" />
+                  <Button fx:id="appointmentsStatusBtn" layoutX="18.0" layoutY="415.0" mnemonicParsing="false" onAction="#handleAppointmentsStatusView" prefHeight="31.0" prefWidth="151.0" text="Appointment Status" />
                   <Label fx:id="loginParentId" layoutX="77.0" layoutY="82.0" prefHeight="19.0" prefWidth="9.0" text="0">
                      <font>
                         <Font name="System Bold" size="13.0" />
@@ -285,6 +285,25 @@
                         </TableView>
                         <ComboBox fx:id="filterByLocation" layoutX="636.0" layoutY="93.0" onAction="#applyEmergencyFilter" prefWidth="150.0" />
                         <ComboBox fx:id="filterByType" layoutX="461.0" layoutY="93.0" onAction="#applyEmergencyFilter" prefWidth="150.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="appointmentStatusPane" layoutY="1.0" prefHeight="555.0" prefWidth="812.0" visible="false" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0">
+                     <children>
+                        <TableView fx:id="appointmentStatusTable" layoutX="17.0" layoutY="99.0" prefHeight="423.0" prefWidth="779.0">
+                          <columns>
+                            <TableColumn fx:id="appointmentId" prefWidth="65.0" text="ID" />
+                            <TableColumn fx:id="appointmentBabyName" prefWidth="128.0" text="Baby Name" />
+                              <TableColumn fx:id="doctorName" prefWidth="134.0" text="Doctor Name" />
+                              <TableColumn fx:id="scheduledAt" prefWidth="126.0" text="Scheduled At" />
+                              <TableColumn fx:id="status" prefWidth="85.0" text="Status" />
+                              <TableColumn fx:id="doctorNote" prefWidth="240.0" text="Doctor Note" />
+                          </columns>
+                        </TableView>
+                        <Label alignment="CENTER" layoutX="17.0" layoutY="24.0" prefHeight="17.0" prefWidth="779.0" text="Appopintment Status Table">
+                           <font>
+                              <Font name="System Bold" size="29.0" />
+                           </font>
+                        </Label>
                      </children>
                   </AnchorPane>
                </children>
