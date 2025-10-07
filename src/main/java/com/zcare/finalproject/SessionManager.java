@@ -12,4 +12,7 @@ public class SessionManager {
 
     public static int loggedInSetterId;
     public static String loggedInSetterName;
+
+    public static int loggedInDoctorId;
+    public static String loggedInDoctorName;
 }

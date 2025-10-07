@@ -192,7 +192,8 @@ public class DoctorsController extends PageUtil implements Initializable {
 
             if (rs.next()) {
                 AlertUtil.successAlert("Login successful!");
-
+                SessionManager.loggedInDoctorId = rs.getInt("id");
+                SessionManager.loggedInDoctorName = rs.getString("name");
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("doctorDashboard.fxml"));
                 Parent root = fxmlLoader.load();
                 Stage stage = (Stage) doctorLoginAccountBtn.getScene().getWindow();
