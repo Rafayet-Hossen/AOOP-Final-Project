@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zcare.finalproject.ViewAllTipsController">
+    <children>
+        <Label layoutX="307.0" layoutY="14.0" text="My Posted Tips">
+            <font>
+                <Font name="System Bold" size="26.0" />
+            </font>
+        </Label>
+
+        <TableView fx:id="tipsTable" layoutX="22.0" layoutY="70.0" prefHeight="400.0" prefWidth="756.0">
+            <columns>
+                <TableColumn fx:id="tipId" prefWidth="50.0" text="ID" />
+                <TableColumn fx:id="tipTitle" prefWidth="150.0" text="Title" />
+                <TableColumn fx:id="tipContent" prefWidth="250.0" text="Content" />
+                <TableColumn fx:id="publishedAt" prefWidth="141.0" text="Published At" />
+                <TableColumn fx:id="actionCol" prefWidth="164.0" text="Actions" />
+            </columns>
+        </TableView>
+    </children>
+</AnchorPane>

@@ -36,6 +36,17 @@ public class DoctorDashboardController implements Initializable {
     @FXML private Label loginDoctorId;
     @FXML private Label loginDoctorName;
 
+    @FXML private AnchorPane shareTipsPane;
+    @FXML private TextField postTitle;
+    @FXML private TextArea postDescription;
+    @FXML private Button postBtn;
+    @FXML private Button viewAllPostButton;
+
+    @FXML private AnchorPane previousAppointmentPane;
+
+    @FXML private Button logoutBtn;
+
+
 
     public void initialize(URL location, ResourceBundle resources) {
         appointmentId.setCellValueFactory(data -> data.getValue().idProperty());
@@ -48,6 +59,26 @@ public class DoctorDashboardController implements Initializable {
         filteredByStatus.getSelectionModel().select("ALL");
 
         loadDoctorAppointments();
+    }
+
+    @FXML
+    private void handleShareTipsView() {
+        pendingAppointmentsPane.setVisible(false);
+        shareTipsPane.setVisible(true);
+    }
+
+    @FXML
+    private void handlePendingAppointmentsView() {
+        pendingAppointmentsPane.setVisible(true);
+        shareTipsPane.setVisible(false);
+        loadDoctorAppointments();
+    }
+
+    @FXML
+    private void handlePreviousAppointmentsView(){
+        previousAppointmentPane.setVisible(true);
+        pendingAppointmentsPane.setVisible(false);
+        shareTipsPane.setVisible(false);
     }
 
     private void loadDoctorAppointments() {
@@ -186,16 +217,85 @@ public class DoctorDashboardController implements Initializable {
     }
 
     @FXML
-    private void handlePendingAppointmentsView() {
-        pendingAppointmentsPane.setVisible(true);
-        loadDoctorAppointments();
-    }
-
-    @FXML
     private void handleApplyFilter() {
         loadDoctorAppointments();
     }
 
+    @FXML
+    private void handlePostTip() {
+        String title = postTitle.getText().trim();
+        String content = postDescription.getText().trim();
+        int doctorId = SessionManager.loggedInDoctorId;
+
+        if (title.isEmpty() || content.isEmpty()) {
+            AlertUtil.errorAlert("Please enter both title and content before posting.");
+            return;
+        }
+
+        String sql = "INSERT INTO tips (doctor_id, title, content) VALUES (?, ?, ?)";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, doctorId);
+            ps.setString(2, title);
+            ps.setString(3, content);
+
+            int rows = ps.executeUpdate();
+            if (rows > 0) {
+                AlertUtil.successAlert("Your tip has been posted successfully!");
+                postTitle.clear();
+                postDescription.clear();
+            } else {
+                AlertUtil.errorAlert("Failed to post your tip. Please try again.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Database Error: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleViewAllPosts() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("viewAllTips.fxml"));
+            Parent root = loader.load();
+
+            // Pass doctor ID to popup controller
+            ViewAllTipsController controller = loader.getController();
+            controller.setDoctorId(SessionManager.loggedInDoctorId);
+
+            Stage stage = new Stage();
+            stage.setTitle("My Posts");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Unable to open posts window.");
+        }
+    }
+
+    @FXML
+    private void handleLogout() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("doctorsLogin.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) logoutBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Doctor Login");
+            stage.show();
+
+            AlertUtil.successAlert("You have been logged out successfully.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Logout failed: " + e.getMessage());
+        }
+    }
 
 
 }
