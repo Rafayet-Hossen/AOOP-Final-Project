@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -135,6 +136,10 @@ public class ParentDashboardController implements Initializable {
     @FXML TextArea messageToDoner;
     @FXML Button submitForm;
 
+    @FXML private AnchorPane doctorTipsPane;
+    @FXML private VBox tipsContainer;
+    @FXML private ScrollPane tipsScrollPane;
+
     @FXML TableView<BloodRequest>bloodRequestTable;
     @FXML TableColumn<BloodRequest,Integer>serialNo;
     @FXML TableColumn<BloodRequest,String>parentName;
@@ -258,6 +263,12 @@ public class ParentDashboardController implements Initializable {
     private void handleAppointmentsStatusView() {
         showOnlyPane(appointmentStatusPane);
         loadParentAppointments();
+    }
+
+    @FXML
+    private void handleDoctorsTipsView() {
+        showOnlyPane(doctorTipsPane);
+        loadDoctorsTips();
     }
 
     private void loadParentsInfo() {
@@ -732,6 +743,59 @@ public class ParentDashboardController implements Initializable {
             e.printStackTrace();
             AlertUtil.errorAlert("Failed to load appointment status: " + e.getMessage());
         }
+    }
+
+    private void loadDoctorsTips() {
+        tipsContainer.getChildren().clear();
+
+        String sql = """
+        SELECT t.id, d.name AS doctor_name, d.specialization, t.title, t.content, t.published_at
+        FROM tips t
+        JOIN doctors d ON t.doctor_id = d.id
+        ORDER BY t.published_at DESC
+    """;
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                VBox card = createTipCard(
+                        rs.getString("doctor_name"),
+                        rs.getString("specialization"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getString("published_at")
+                );
+                tipsContainer.getChildren().add(card);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Failed to load doctor tips: " + e.getMessage());
+        }
+    }
+
+    private VBox createTipCard(String doctorName, String specialization, String title, String content, String publishedAt) {
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+        Label doctorInfo = new Label("Dr. " + doctorName + " (" + specialization + ")");
+        doctorInfo.setStyle("-fx-font-size: 13px; -fx-text-fill: #555;");
+
+        Label dateLabel = new Label("Published: " + publishedAt);
+        dateLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: gray;");
+
+        TextArea contentLabel = new TextArea(content);
+        contentLabel.setWrapText(true);
+        contentLabel.setEditable(false);
+        contentLabel.setPrefHeight(100);
+        contentLabel.setStyle("-fx-background-color: #f8f9fa; -fx-border-color: #ccc; -fx-border-radius: 5;");
+
+        VBox box = new VBox(5, titleLabel, doctorInfo, contentLabel, dateLabel);
+        box.setStyle("-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; "
+                + "-fx-padding: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5,0,0,2);");
+        return box;
     }
 
 
