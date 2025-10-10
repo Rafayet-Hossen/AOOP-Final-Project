@@ -223,6 +223,7 @@ public class ParentDashboardController implements Initializable {
         babySetterRequestPane.setVisible(false);
         emergencyContactPane.setVisible(false);
         appointmentStatusPane.setVisible(false);
+        doctorTipsPane.setVisible(false);
 
         if (paneToShow != null) {
             paneToShow.setVisible(true);
@@ -510,19 +511,16 @@ public class ParentDashboardController implements Initializable {
         ObservableList<BloodRequest> list = FXCollections.observableArrayList();
 
         String sql = """
-        SELECT
-            r.id,
-            p.name AS parent_name,
-            COALESCE(GROUP_CONCAT(DISTINCT d.name SEPARATOR ', '), 'Pending') AS donor_names,
-            COALESCE(GROUP_CONCAT(DISTINCT d.phone SEPARATOR ', '), '-') AS donor_phones,
-            r.created_at,
-            r.status
+        SELECT r.id,
+               p.name AS parent_name,
+               d.name AS donor_name,
+               d.phone AS donor_phone,
+               r.created_at,
+               r.status
         FROM blood_donor_requests r
         JOIN parents p ON r.parent_id = p.id
-        LEFT JOIN blood_donor_accepts a ON r.id = a.request_id
-        LEFT JOIN blood_donors d ON a.donor_id = d.id
+        LEFT JOIN blood_donors d ON r.blood_donor_id = d.id
         WHERE r.parent_id = ? AND r.needed_to >= NOW()
-        GROUP BY r.id, p.name, r.created_at, r.status
         ORDER BY r.created_at DESC
     """;
 
@@ -535,8 +533,8 @@ public class ParentDashboardController implements Initializable {
                     list.add(new BloodRequest(
                             rs.getInt("id"),
                             rs.getString("parent_name"),
-                            rs.getString("donor_names"),
-                            rs.getString("donor_phones"),
+                            rs.getString("donor_name") != null ? rs.getString("donor_name") : "Pending",
+                            rs.getString("donor_phone") != null ? rs.getString("donor_phone") : "-",
                             rs.getString("created_at"),
                             rs.getString("status")
                     ));
@@ -550,7 +548,6 @@ public class ParentDashboardController implements Initializable {
             AlertUtil.errorAlert("Failed to load blood requests.");
         }
     }
-
 
     @FXML
     private void handleSetterRequestSubmit() {

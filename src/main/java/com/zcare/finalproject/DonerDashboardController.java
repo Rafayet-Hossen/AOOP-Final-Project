@@ -90,20 +90,24 @@ public class DonerDashboardController implements Initializable {
     }
     private void handleAcceptRequest(int requestId) {
         int donorId = SessionManager.loggedInDonorId;
-        String sql = "UPDATE blood_donor_requests SET blood_donor_id = ?, status = 'ACCEPTED' WHERE id = ?";
+        String sql = "UPDATE blood_donor_requests " +
+                "SET blood_donor_id = ?, status = 'ACCEPTED' " +
+                "WHERE id = ? AND status = 'REQUESTED' AND (blood_donor_id IS NULL OR blood_donor_id = 0)";
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, donorId);
             ps.setInt(2, requestId);
+
             int updated = ps.executeUpdate();
 
             if (updated > 0) {
                 AlertUtil.successAlert("Request accepted successfully!");
-                loadBloodRequests(); // refresh table
+                loadBloodRequests();
             } else {
-                AlertUtil.errorAlert("Failed to accept the request.");
+                AlertUtil.errorAlert("Sorry — this request was already accepted by another donor.");
+                loadBloodRequests();
             }
 
         } catch (Exception e) {
@@ -111,6 +115,7 @@ public class DonerDashboardController implements Initializable {
             AlertUtil.errorAlert("Database error: " + e.getMessage());
         }
     }
+
 
     @FXML
     private void handleLogout() {
