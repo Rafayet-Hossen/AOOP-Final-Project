@@ -23,7 +23,7 @@
                         <Image url="@images/mother.png" />
                      </image>
                   </ImageView>
-                  <Button fx:id="seeSetterRequestBtn" layoutX="18.0" layoutY="166.0" mnemonicParsing="false" onAction="#loadSetterRequests" prefHeight="30.0" prefWidth="142.0" text="See Requests" />
+                  <Button fx:id="seeSetterRequestBtn" layoutX="18.0" layoutY="166.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="142.0" text="See Requests" />
                   <Label layoutX="18.0" layoutY="138.0" text="Menus:">
                      <font>
                         <Font size="14.0" />

@@ -26,12 +26,12 @@ public class BabySetterDashboardController implements Initializable {
     @FXML private Button seeSetterRequestBtn;
 
     @FXML private AnchorPane setterRequestPane;
-    @FXML private TableView<BabySetterRequestRow> setterRequestTable;
-    @FXML private TableColumn<BabySetterRequestRow, Number> setterRequestId;
-    @FXML private TableColumn<BabySetterRequestRow, String> setterRequestParents;
-    @FXML private TableColumn<BabySetterRequestRow, String> setterParentsNo;
-    @FXML private TableColumn<BabySetterRequestRow, String> parentsMessage;
-    @FXML private TableColumn<BabySetterRequestRow, Void> setterAction;
+    @FXML private TableView<BabySetterRequest> setterRequestTable;
+    @FXML private TableColumn<BabySetterRequest, Number> setterRequestId;
+    @FXML private TableColumn<BabySetterRequest, String> setterRequestParents;
+    @FXML private TableColumn<BabySetterRequest, String> setterParentsNo;
+    @FXML private TableColumn<BabySetterRequest, String> parentsMessage;
+    @FXML private TableColumn<BabySetterRequest, Void> setterAction;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -49,7 +49,7 @@ public class BabySetterDashboardController implements Initializable {
 
             {
                 btn.setOnAction(event -> {
-                    BabySetterRequestRow selected = getTableView().getItems().get(getIndex());
+                    BabySetterRequest selected = getTableView().getItems().get(getIndex());
                     handleAcceptRequest(selected.getId());
                 });
             }
@@ -61,42 +61,37 @@ public class BabySetterDashboardController implements Initializable {
             }
         });
 
-        loadSetterRequests();
+        loadMySetterRequests();
     }
 
-    @FXML
-    private void loadSetterRequests() {
-        ObservableList<BabySetterRequestRow> list = FXCollections.observableArrayList();
+    private void loadMySetterRequests() {
+        ObservableList<BabySetterRequest> list = FXCollections.observableArrayList();
 
         String sql = """
-            SELECT
-                r.id,
-                p.name AS parent_name,
-                COALESCE(GROUP_CONCAT(DISTINCT bs.name SEPARATOR ', '), 'Pending') AS setter_names,
-                COALESCE(GROUP_CONCAT(DISTINCT bs.phone SEPARATOR ', '), '-') AS setter_phones,
-                r.created_at,
-                r.status
-            FROM baby_setter_requests r
-            JOIN parents p ON r.parent_id = p.id
-            LEFT JOIN baby_setter_accepts bsa ON r.id = bsa.request_id
-            LEFT JOIN baby_setters bs ON bsa.setter_id = bs.id
-            WHERE r.parent_id = ? AND r.needed_to >= NOW()
-            GROUP BY r.id, p.name, r.created_at, r.status
-            ORDER BY r.created_at DESC
-        """;
-
+        SELECT r.id, p.name AS parent_name, p.phone AS parent_phone, r.message
+        FROM baby_setter_requests r
+        JOIN parents p ON r.parent_id = p.id
+        WHERE r.status = 'REQUESTED'
+          AND r.needed_to >= NOW()
+          AND r.id NOT IN (
+              SELECT request_id
+              FROM baby_setter_accepts
+              WHERE setter_id = ?
+          )
+        ORDER BY r.created_at DESC
+    """;
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, SessionManager.loggedInSetterId);
+            ps.setInt(1, SessionManager.loggedInSetterId); // Now correct
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                list.add(new BabySetterRequestRow(
+                list.add(new BabySetterRequest(
                         rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getString("phone"),
+                        rs.getString("parent_name"),
+                        rs.getString("parent_phone"),
                         rs.getString("message")
                 ));
             }
@@ -105,9 +100,10 @@ public class BabySetterDashboardController implements Initializable {
 
         } catch (Exception e) {
             e.printStackTrace();
-            AlertUtil.errorAlert("Failed to load setter requests.");
+            AlertUtil.errorAlert("Failed to load baby setter requests.");
         }
     }
+
 
     private void handleAcceptRequest(int requestId) {
         int setterId = SessionManager.loggedInSetterId;
@@ -123,7 +119,7 @@ public class BabySetterDashboardController implements Initializable {
             int rows = ps.executeUpdate();
             if (rows > 0) {
                 AlertUtil.successAlert("You have accepted this request.");
-                loadSetterRequests();
+                loadMySetterRequests();
             } else {
                 AlertUtil.errorAlert("Could not accept the request.");
             }
