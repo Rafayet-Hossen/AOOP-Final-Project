@@ -64,6 +64,7 @@ public class DoctorDashboardController implements Initializable {
     @FXML
     private void handleShareTipsView() {
         pendingAppointmentsPane.setVisible(false);
+        previousAppointmentPane.setVisible(false);
         shareTipsPane.setVisible(true);
     }
 
@@ -71,6 +72,7 @@ public class DoctorDashboardController implements Initializable {
     private void handlePendingAppointmentsView() {
         pendingAppointmentsPane.setVisible(true);
         shareTipsPane.setVisible(false);
+        previousAppointmentPane.setVisible(false);
         loadDoctorAppointments();
     }
 
