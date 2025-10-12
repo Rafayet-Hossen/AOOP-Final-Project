@@ -124,7 +124,7 @@ public class AdminDashboardController implements Initializable {
         ObservableList<Doctor> list = FXCollections.observableArrayList();
         int count = 0;
 
-        String query = "SELECT id, email, name, phone, specialization FROM doctors";
+        String query = "SELECT id, email, name, phone, specialization,clinic_address FROM doctors";
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(query);
