@@ -58,6 +58,15 @@ public class AdminDashboardController implements Initializable {
     @FXML private TableColumn<BabySetter, String> setterDistrict;
     @FXML private Label activeSettersCount;
 
+    @FXML private TableView<Baby> babiesInformationTable;
+    @FXML private TableColumn<Baby, Integer> babyId;
+    @FXML private TableColumn<Baby, String> babyName;
+    @FXML private TableColumn<Baby, String> babyParentsName;
+    @FXML private TableColumn<Baby, String> babyParentsPhoneNo;
+    @FXML private TableColumn<Baby, String> babyDOB;
+    @FXML private Label activeBabiesCount;
+
+
     @FXML private Button logoutBtn;
     @FXML private Label loginAdminId;
     @FXML private Label loginAdminName;
@@ -95,6 +104,7 @@ public class AdminDashboardController implements Initializable {
         loadParents();
         loadDoners();
         loadSetters();
+        loadBabies();
     }
 
     private void loadAdminInfo() {
@@ -147,6 +157,7 @@ public class AdminDashboardController implements Initializable {
             parentsInformationTable.setVisible(false);
             donersInformationTable.setVisible(false);
             settersInformationTable.setVisible(false);
+            babiesInformationTable.setVisible(false);
             informationOf.setText("Information of Doctors");
             activeDoctorsCount.setText(String.valueOf(count));
 
@@ -182,6 +193,7 @@ public class AdminDashboardController implements Initializable {
             doctorsInformationTable.setVisible(false);
             donersInformationTable.setVisible(false);
             settersInformationTable.setVisible(false);
+            babiesInformationTable.setVisible(false);
             informationOf.setText("Information of Parents");
             activeParentsCount.setText(String.valueOf(count));
 
@@ -216,6 +228,7 @@ public class AdminDashboardController implements Initializable {
             doctorsInformationTable.setVisible(false);
             parentsInformationTable.setVisible(false);
             settersInformationTable.setVisible(false);
+            babiesInformationTable.setVisible(false);
             informationOf.setText("Information of Doners");
             activeDonersCount.setText(String.valueOf(count));
 
@@ -252,6 +265,7 @@ public class AdminDashboardController implements Initializable {
             doctorsInformationTable.setVisible(false);
             donersInformationTable.setVisible(false);
             parentsInformationTable.setVisible(false);
+            babiesInformationTable.setVisible(false);
             informationOf.setText("Information of Baby Setters");
             activeSettersCount.setText(String.valueOf(count));
 
@@ -260,5 +274,55 @@ public class AdminDashboardController implements Initializable {
             AlertUtil.errorAlert("Error loading parents: " + e.getMessage());
         }
     }
+
+    public void loadBabies() {
+        int count = 0;
+        ObservableList<Baby> list = FXCollections.observableArrayList();
+        String sql = """
+        SELECT 
+            b.id, b.name, b.dob,
+            p.name AS parent_name,
+            p.phone AS parent_phone
+        FROM babies b
+        JOIN parents p ON b.parent_id = p.id
+    """;
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                list.add(new Baby(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("parent_name"),
+                        rs.getString("parent_phone"),
+                        rs.getString("dob")
+                ));
+                count++;
+            }
+
+            babyId.setCellValueFactory(cell -> cell.getValue().idProperty().asObject());
+            babyName.setCellValueFactory(cell -> cell.getValue().nameProperty());
+            babyParentsName.setCellValueFactory(cell -> cell.getValue().parentNameProperty());
+            babyParentsPhoneNo.setCellValueFactory(cell -> cell.getValue().parentPhoneProperty());
+            babyDOB.setCellValueFactory(cell -> cell.getValue().dobProperty());
+
+            babiesInformationTable.setItems(list);
+
+            babiesInformationTable.setVisible(true);
+            doctorsInformationTable.setVisible(false);
+            parentsInformationTable.setVisible(false);
+            donersInformationTable.setVisible(false);
+            settersInformationTable.setVisible(false);
+            activeBabiesCount.setText(String.valueOf(count));
+            informationOf.setText("Information of Babies");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Failed to load babies data: " + e.getMessage());
+        }
+    }
+
 
 }
