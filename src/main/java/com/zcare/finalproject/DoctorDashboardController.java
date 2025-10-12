@@ -264,7 +264,6 @@ public class DoctorDashboardController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("viewAllTips.fxml"));
             Parent root = loader.load();
 
-            // Pass doctor ID to popup controller
             ViewAllTipsController controller = loader.getController();
             controller.setDoctorId(SessionManager.loggedInDoctorId);
 

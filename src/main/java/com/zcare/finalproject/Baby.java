@@ -65,4 +65,11 @@ public class Baby {
     public StringProperty parentNameProperty() { return parentName; }
     public StringProperty parentEmailProperty() { return parentEmail; }
     public StringProperty parentPhoneProperty() { return parentPhone; }
+
+    @Override
+    public String toString() {
+        return name.get();
+    }
+
+
 }

@@ -130,9 +130,9 @@
                      <children>
                         <TableView fx:id="previolusAppointmentTable" layoutX="48.0" layoutY="133.0" prefHeight="389.0" prefWidth="804.0">
                           <columns>
-                            <TableColumn fx:id="appointmentId" prefWidth="115.0" text="Appointment ID" />
+                            <TableColumn fx:id="appointment_Id" prefWidth="115.0" text="Appointment ID" />
                             <TableColumn fx:id="parentsName" prefWidth="183.0" text="Parents Name" />
-                              <TableColumn fx:id="babyName" prefWidth="177.0" text="Baby Name" />
+                              <TableColumn fx:id="baby_Name" prefWidth="177.0" text="Baby Name" />
                               <TableColumn fx:id="lastVisited" prefWidth="184.0" text="Last Visit Date" />
                               <TableColumn fx:id="action" prefWidth="143.0" text="Action" />
                           </columns>
