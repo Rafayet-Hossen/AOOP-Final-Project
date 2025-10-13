@@ -50,7 +50,7 @@ public class AdminController extends PageUtil implements Initializable {
         selectUser.getSelectionModel().select("Admin");
         selectUser.setOnAction(event -> {
             String selected = selectUser.getSelectionModel().getSelectedItem();
-            if(!"Parent".equals(selected)){
+            if(!"Admin".equals(selected)){
                 try {
                     PageUtil.switchUser(selectUser);
                 } catch (Exception e) {
