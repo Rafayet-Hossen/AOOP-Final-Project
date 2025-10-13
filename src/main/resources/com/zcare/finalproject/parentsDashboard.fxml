@@ -121,9 +121,9 @@
                         <ComboBox fx:id="babyBloodGroup" layoutX="15.0" layoutY="181.0" prefHeight="32.0" prefWidth="186.0" promptText="Blood Group" />
                         <TextField fx:id="babyHeight" layoutX="15.0" layoutY="226.0" prefHeight="35.0" prefWidth="187.0" promptText="Height" />
                         <TextField fx:id="babyWeight" layoutX="14.0" layoutY="269.0" prefHeight="35.0" prefWidth="189.0" promptText="Weight" />
-                        <TextArea fx:id="alergiesNote" layoutX="230.0" layoutY="49.0" prefHeight="166.0" prefWidth="200.0" promptText="Post Birth Diseases" />
-                        <TextArea fx:id="medicalConditionNote" layoutX="439.0" layoutY="49.0" prefHeight="166.0" prefWidth="200.0" promptText="Medical Complication" />
-                        <TextArea fx:id="informationNote" layoutX="229.0" layoutY="226.0" prefHeight="77.0" prefWidth="409.0" promptText="Comments" />
+                        <TextArea wrapText="true" fx:id="alergiesNote" layoutX="230.0" layoutY="49.0" prefHeight="166.0" prefWidth="200.0" promptText="Post Birth Diseases" />
+                        <TextArea wrapText="true" fx:id="medicalConditionNote" layoutX="439.0" layoutY="49.0" prefHeight="166.0" prefWidth="200.0" promptText="Medical Complication" />
+                        <TextArea wrapText="true" fx:id="informationNote" layoutX="229.0" layoutY="226.0" prefHeight="77.0" prefWidth="409.0" promptText="Comments" />
                         <Button fx:id="submitFormBtn" layoutX="663.0" layoutY="274.0" mnemonicParsing="false" onAction="#handleSubmitForm" prefHeight="25.0" prefWidth="139.0" text="Submit Form" />
                      </children>
                   </AnchorPane>
@@ -185,7 +185,7 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <TextArea fx:id="messageToDoner" layoutX="458.0" layoutY="90.0" prefHeight="160.0" prefWidth="335.0" promptText="Message">
+                        <TextArea wrapText="true" fx:id="messageToDoner" layoutX="458.0" layoutY="90.0" prefHeight="160.0" prefWidth="335.0" promptText="Message">
                            <font>
                               <Font size="15.0" />
                            </font>
@@ -246,7 +246,7 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <TextArea fx:id="messageToSetter" layoutX="458.0" layoutY="90.0" prefHeight="160.0" prefWidth="335.0" promptText="Message">
+                        <TextArea wrapText="true" fx:id="messageToSetter" layoutX="458.0" layoutY="90.0" prefHeight="160.0" prefWidth="335.0" promptText="Message">
                            <font>
                               <Font size="15.0" />
                            </font>
