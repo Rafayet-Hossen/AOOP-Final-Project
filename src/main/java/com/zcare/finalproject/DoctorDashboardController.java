@@ -8,15 +8,19 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class DoctorDashboardController implements Initializable {
@@ -42,6 +46,21 @@ public class DoctorDashboardController implements Initializable {
     @FXML private Button postBtn;
     @FXML private Button viewAllPostButton;
 
+    @FXML private TextField docName;
+    @FXML private TextField docEmail;
+    @FXML private TextField docPhone;
+    @FXML private TextArea docClinicAddress;
+    @FXML private ComboBox<String> docDistrict;
+    @FXML private Button docChooseProfilePicBtn;
+    @FXML private ImageView docProfilePic;
+    @FXML private Button saveChangesBtn;
+
+    @FXML private Label dName;
+    @FXML private Label dEmail;
+    @FXML private Label dPhone;
+    @FXML private Label dAddress;
+    @FXML private Label dDistrict;
+
     @FXML private AnchorPane updateProfilePane;
 
     @FXML private AnchorPane previousAppointmentPane;
@@ -59,6 +78,24 @@ public class DoctorDashboardController implements Initializable {
 
         filteredByStatus.setItems(FXCollections.observableArrayList("ALL", "REQUESTED", "CONFIRMED", "CANCELLED", "COMPLETED"));
         filteredByStatus.getSelectionModel().select("ALL");
+
+        if (docDistrict != null) {
+            List<String> districts = Arrays.asList(
+                    "Bagerhat", "Bandarban", "Barguna", "Barisal", "Bhola", "Bogura", "Brahmanbaria",
+                    "Chandpur", "Chapai Nawabganj", "Chattogram", "Chuadanga", "Comilla", "Cox's Bazar",
+                    "Dhaka", "Dinajpur", "Faridpur", "Feni", "Gaibandha", "Gazipur", "Gopalganj",
+                    "Habiganj", "Jamalpur", "Jashore", "Jhalokathi", "Jhenaidah", "Joypurhat", "Khagrachari",
+                    "Khulna", "Kishoreganj", "Kurigram", "Kushtia", "Lakshmipur", "Lalmonirhat", "Madaripur",
+                    "Magura", "Manikganj", "Meherpur", "Moulvibazar", "Munshiganj", "Mymensingh", "Naogaon",
+                    "Narail", "Narayanganj", "Narsingdi", "Natore", "Netrokona", "Nilphamari", "Noakhali",
+                    "Pabna", "Panchagarh", "Patuakhali", "Pirojpur", "Rajbari", "Rajshahi", "Rangamati",
+                    "Rangpur", "Satkhira", "Shariatpur", "Sherpur", "Sirajganj", "Sunamganj", "Sylhet",
+                    "Tangail", "Thakurgaon"
+            );
+            docDistrict.getItems().addAll(districts);
+            docDistrict.setVisibleRowCount(5);
+            docDistrict.getSelectionModel().clearSelection();
+        }
 
         loadDoctorAppointments();
     }
@@ -93,6 +130,7 @@ public class DoctorDashboardController implements Initializable {
         pendingAppointmentsPane.setVisible(false);
         shareTipsPane.setVisible(false);
         updateProfilePane.setVisible(true);
+        loadDoctorProfile();
     }
 
     private void loadDoctorAppointments() {
@@ -310,5 +348,32 @@ public class DoctorDashboardController implements Initializable {
         }
     }
 
+    private void loadDoctorProfile() {
+        String sql = "SELECT * FROM doctors WHERE id = ?";
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, SessionManager.loggedInDoctorId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                docName.setText(rs.getString("name"));
+                docEmail.setText(rs.getString("email"));
+                docPhone.setText(rs.getString("phone"));
+                docClinicAddress.setText(rs.getString("clinic_address"));
+                docDistrict.setValue(rs.getString("district"));
+
+                dName.setText(rs.getString("name"));
+                dEmail.setText(rs.getString("email"));
+                dPhone.setText(rs.getString("phone"));
+                dAddress.setText(rs.getString("clinic_address"));
+                dDistrict.setText(rs.getString("district"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Failed to load doctor profile.");
+        }
+    }
 
 }
