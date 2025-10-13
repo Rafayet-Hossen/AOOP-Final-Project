@@ -8,13 +8,20 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -53,6 +60,7 @@ public class DoctorDashboardController implements Initializable {
     @FXML private ComboBox<String> docDistrict;
     @FXML private Button docChooseProfilePicBtn;
     @FXML private ImageView docProfilePic;
+    @FXML private ImageView doctorProfilePic;
     @FXML private Button saveChangesBtn;
 
     @FXML private Label dName;
@@ -67,6 +75,7 @@ public class DoctorDashboardController implements Initializable {
 
     @FXML private Button logoutBtn;
 
+    private String imagePath = "";
 
 
     public void initialize(URL location, ResourceBundle resources) {
@@ -95,6 +104,9 @@ public class DoctorDashboardController implements Initializable {
             docDistrict.getItems().addAll(districts);
             docDistrict.setVisibleRowCount(5);
             docDistrict.getSelectionModel().clearSelection();
+            docChooseProfilePicBtn.setOnAction(event -> handleChooseProfilePic());
+            saveChangesBtn.setOnAction(event -> handleSaveChanges());
+            initializeDoctorProfileAfterLogin();
         }
 
         loadDoctorAppointments();
@@ -132,6 +144,39 @@ public class DoctorDashboardController implements Initializable {
         updateProfilePane.setVisible(true);
         loadDoctorProfile();
     }
+
+    public void initializeDoctorProfileAfterLogin() {
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement("SELECT name, profile_pic_path FROM doctors WHERE id = ?")) {
+
+            ps.setInt(1, SessionManager.loggedInDoctorId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                String name = rs.getString("name");
+                String imagePath = rs.getString("profile_pic_path");
+                loginDoctorName.setText(name);
+
+                if (imagePath != null && !imagePath.isEmpty()) {
+                    File file = new File(imagePath);
+                    if (file.exists()) {
+                        Image img = new Image(file.toURI().toString());
+                        doctorProfilePic.setImage(img);
+                    } else {
+                        Image defaultImg = new Image(getClass().getResource("@/images/user.png").toString());
+                        doctorProfilePic.setImage(defaultImg);
+                    }
+                } else {
+                    Image defaultImg = new Image(getClass().getResource("@/images/user.png").toString());
+                    doctorProfilePic.setImage(defaultImg);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void loadDoctorAppointments() {
         ObservableList<AppointmentRow> appointments = FXCollections.observableArrayList();
@@ -368,11 +413,108 @@ public class DoctorDashboardController implements Initializable {
                 dPhone.setText(rs.getString("phone"));
                 dAddress.setText(rs.getString("clinic_address"));
                 dDistrict.setText(rs.getString("district"));
+                String storedPath = rs.getString("profile_pic_path");
+
+                if (storedPath != null && !storedPath.isEmpty()) {
+                    File file = new File(storedPath);
+                    if (file.exists()) {
+                        Image img = new Image(file.toURI().toString());
+                        docProfilePic.setImage(img);
+                    } else {
+                        Image defaultImg = new Image(getClass().getResource("/images/user.png").toString());
+                        docProfilePic.setImage(defaultImg);
+                        doctorProfilePic.setImage(defaultImg);
+                    }
+                } else {
+                    Image defaultImg = new Image(getClass().getResource("/images/user.png").toString());
+                    docProfilePic.setImage(defaultImg);
+                    doctorProfilePic.setImage(defaultImg);
+                }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
             AlertUtil.errorAlert("Failed to load doctor profile.");
+        }
+    }
+
+
+    private void handleChooseProfilePic() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Profile Picture");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        File selectedFile = fileChooser.showOpenDialog(docChooseProfilePicBtn.getScene().getWindow());
+        if (selectedFile != null) {
+            try {
+                Path destDir = Paths.get(System.getProperty("user.dir"), "profile_images");
+                if (!Files.exists(destDir)) {
+                    Files.createDirectories(destDir);
+                }
+
+                String newFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
+                Path destPath = destDir.resolve(newFileName);
+                Files.copy(selectedFile.toPath(), destPath, StandardCopyOption.REPLACE_EXISTING);
+
+                imagePath = destPath.toString();
+                docProfilePic.setImage(new Image(destPath.toUri().toString()));
+                doctorProfilePic.setImage(new Image(destPath.toUri().toString()));
+
+                AlertUtil.successAlert("Profile picture selected successfully.");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                AlertUtil.errorAlert("Failed to upload profile picture: " + e.getMessage());
+            }
+        }
+    }
+
+    private void handleSaveChanges() {
+        String name = docName.getText().trim();
+        String phone = docPhone.getText().trim();
+        String clinicAddress = docClinicAddress.getText().trim();
+        String district = docDistrict.getValue();
+
+        if (name.isEmpty() || phone.isEmpty() || clinicAddress.isEmpty() || district == null) {
+            AlertUtil.errorAlert("Please fill in all required fields.");
+            return;
+        }
+
+        String sql = """
+            UPDATE doctors 
+            SET name = ?, phone = ?, clinic_address = ?, district = ?, profile_pic_path = ?
+            WHERE id = ?
+        """;
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, name);
+            ps.setString(2, phone);
+            ps.setString(3, clinicAddress);
+            ps.setString(4, district);
+            ps.setString(5, imagePath);
+            ps.setInt(6, SessionManager.loggedInDoctorId);
+
+            int rows = ps.executeUpdate();
+            if (rows > 0) {
+                AlertUtil.successAlert("Profile updated successfully!");
+
+                // Update right-side labels
+                dName.setText(name);
+                dEmail.setText(docEmail.getText());
+                dPhone.setText(phone);
+                dAddress.setText(clinicAddress);
+                dDistrict.setText(district);
+            } else {
+                AlertUtil.errorAlert("No changes were made.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Failed to update profile: " + e.getMessage());
         }
     }
 
