@@ -166,6 +166,7 @@ public class ParentDashboardController implements Initializable {
     @FXML private TableColumn<BabySetterRequest, String> setterAcceptedByNo;
     @FXML private TableColumn<BabySetterRequest, String> setterRequestCreatedAt;
     @FXML private TableColumn<BabySetterRequest, String> setterRequestStatus;
+    @FXML private TableColumn<BabySetterRequest, Void> setterAction;
 
     @FXML private AnchorPane emergencyContactPane;
     @FXML private TableView<EmergencyContact> emergencyContactTable;
@@ -209,6 +210,24 @@ public class ParentDashboardController implements Initializable {
         setterAcceptedByNo.setCellValueFactory(data -> data.getValue().acceptedByPhoneProperty());
         setterRequestCreatedAt.setCellValueFactory(data -> data.getValue().createdAtProperty());
         setterRequestStatus.setCellValueFactory(data -> data.getValue().statusProperty());
+
+        setterAction.setCellFactory(col -> new TableCell<>() {
+            private final Button completeBtn = new Button("Completed");
+
+            {
+                completeBtn.setOnAction(event -> {
+                    BabySetterRequest request = getTableView().getItems().get(getIndex());
+                    markRequestCompleted(request.getId());
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : completeBtn);
+            }
+        });
+
 
         babyGender.getSelectionModel().clearSelection();
         babyBloodGroup.getSelectionModel().clearSelection();
@@ -600,14 +619,22 @@ public class ParentDashboardController implements Initializable {
         ObservableList<BabySetterRequest> list = FXCollections.observableArrayList();
 
         String sql = """
-            SELECT r.id, p.name AS parent_name, bs.name AS setter_name, bs.phone AS setter_phone,
-                   r.created_at, r.status
-            FROM baby_setter_requests r
-            JOIN parents p ON r.parent_id = p.id
-            LEFT JOIN baby_setter_accepts bsa ON r.id = bsa.request_id
-            LEFT JOIN baby_setters bs ON bsa.setter_id = bs.id
-            WHERE r.parent_id = ? AND r.needed_to >= NOW()
-        """;
+        SELECT
+          r.id,
+          p.name AS parent_name,
+          COALESCE(GROUP_CONCAT(bs.name SEPARATOR ', '), 'Pending') AS setter_names,
+          COALESCE(GROUP_CONCAT(bs.phone SEPARATOR ', '), '-') AS setter_phones,
+          r.created_at,
+          r.status
+        FROM baby_setter_requests r
+        JOIN parents p ON r.parent_id = p.id
+        LEFT JOIN baby_setter_accepts a ON r.id = a.request_id
+        LEFT JOIN baby_setters bs ON a.setter_id = bs.id
+        WHERE r.parent_id = ?
+          AND r.needed_to >= NOW()
+        GROUP BY r.id, p.name, r.created_at, r.status
+        ORDER BY r.created_at DESC
+    """;
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -619,8 +646,8 @@ public class ParentDashboardController implements Initializable {
                 list.add(new BabySetterRequest(
                         rs.getInt("id"),
                         rs.getString("parent_name"),
-                        rs.getString("setter_name") != null ? rs.getString("setter_name") : "Pending",
-                        rs.getString("setter_phone") != null ? rs.getString("setter_phone") : "-",
+                        rs.getString("setter_names") != null ? rs.getString("setter_names") : "Pending",
+                        rs.getString("setter_phones") != null ? rs.getString("setter_phones") : "-",
                         rs.getString("created_at"),
                         rs.getString("status")
                 ));
@@ -633,6 +660,29 @@ public class ParentDashboardController implements Initializable {
             AlertUtil.errorAlert("Failed to load requests.");
         }
     }
+
+
+    private void markRequestCompleted(int requestId) {
+        String sql = "UPDATE baby_setter_requests SET status = 'COMPLETED' WHERE id = ?";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, requestId);
+            int rows = ps.executeUpdate();
+            if (rows > 0) {
+                AlertUtil.successAlert("Request marked as completed.");
+                loadMySetterRequests(); // Refresh table
+            } else {
+                AlertUtil.errorAlert("Update failed.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Error: " + e.getMessage());
+        }
+    }
+
 
     private void loadEmergencyContacts() {
         emergencyList.clear();

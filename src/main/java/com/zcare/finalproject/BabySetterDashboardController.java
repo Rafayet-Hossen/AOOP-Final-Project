@@ -45,19 +45,19 @@ public class BabySetterDashboardController implements Initializable {
         parentsMessage.setCellValueFactory(data -> data.getValue().messageProperty());
 
         setterAction.setCellFactory(col -> new TableCell<>() {
-            private final Button btn = new Button("Accept");
+            private final Button viewBtn = new Button("View Details");
 
             {
-                btn.setOnAction(event -> {
+                viewBtn.setOnAction(event -> {
                     BabySetterRequest selected = getTableView().getItems().get(getIndex());
-                    handleAcceptRequest(selected.getId());
+                    openRequestDetails(selected.getId());
                 });
             }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : btn);
+                setGraphic(empty ? null : viewBtn);
             }
         });
 
@@ -84,7 +84,7 @@ public class BabySetterDashboardController implements Initializable {
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, SessionManager.loggedInSetterId); // Now correct
+            ps.setInt(1, SessionManager.loggedInSetterId);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -103,6 +103,27 @@ public class BabySetterDashboardController implements Initializable {
             AlertUtil.errorAlert("Failed to load baby setter requests.");
         }
     }
+
+    private void openRequestDetails(int requestId) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("setterRequestDetails.fxml"));
+            Parent root = loader.load();
+
+            SetterRequestDetailsController controller = loader.getController();
+            controller.setRequestId(requestId);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Request Details");
+            stage.setResizable(false);
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Failed to open request details.");
+        }
+    }
+
 
 
     private void handleAcceptRequest(int requestId) {

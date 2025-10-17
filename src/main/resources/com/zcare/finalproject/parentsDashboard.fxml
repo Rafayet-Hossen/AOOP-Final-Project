@@ -121,9 +121,9 @@
                         <ComboBox fx:id="babyBloodGroup" layoutX="15.0" layoutY="181.0" prefHeight="32.0" prefWidth="186.0" promptText="Blood Group" />
                         <TextField fx:id="babyHeight" layoutX="15.0" layoutY="226.0" prefHeight="35.0" prefWidth="187.0" promptText="Height" />
                         <TextField fx:id="babyWeight" layoutX="14.0" layoutY="269.0" prefHeight="35.0" prefWidth="189.0" promptText="Weight" />
-                        <TextArea wrapText="true" fx:id="alergiesNote" layoutX="230.0" layoutY="49.0" prefHeight="166.0" prefWidth="200.0" promptText="Post Birth Diseases" />
-                        <TextArea wrapText="true" fx:id="medicalConditionNote" layoutX="439.0" layoutY="49.0" prefHeight="166.0" prefWidth="200.0" promptText="Medical Complication" />
-                        <TextArea wrapText="true" fx:id="informationNote" layoutX="229.0" layoutY="226.0" prefHeight="77.0" prefWidth="409.0" promptText="Comments" />
+                        <TextArea fx:id="alergiesNote" layoutX="230.0" layoutY="49.0" prefHeight="166.0" prefWidth="200.0" promptText="Post Birth Diseases" wrapText="true" />
+                        <TextArea fx:id="medicalConditionNote" layoutX="439.0" layoutY="49.0" prefHeight="166.0" prefWidth="200.0" promptText="Medical Complication" wrapText="true" />
+                        <TextArea fx:id="informationNote" layoutX="229.0" layoutY="226.0" prefHeight="77.0" prefWidth="409.0" promptText="Comments" wrapText="true" />
                         <Button fx:id="submitFormBtn" layoutX="663.0" layoutY="274.0" mnemonicParsing="false" onAction="#handleSubmitForm" prefHeight="25.0" prefWidth="139.0" text="Submit Form" />
                      </children>
                   </AnchorPane>
@@ -185,7 +185,7 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <TextArea wrapText="true" fx:id="messageToDoner" layoutX="458.0" layoutY="90.0" prefHeight="160.0" prefWidth="335.0" promptText="Message">
+                        <TextArea fx:id="messageToDoner" layoutX="458.0" layoutY="90.0" prefHeight="160.0" prefWidth="335.0" promptText="Message" wrapText="true">
                            <font>
                               <Font size="15.0" />
                            </font>
@@ -207,7 +207,7 @@
                         </TableView>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="babySetterRequestPane" layoutX="2.0" layoutY="2.0" prefHeight="553.0" prefWidth="810.0" visible="false">
+                  <AnchorPane fx:id="babySetterRequestPane" layoutX="2.0" layoutY="2.0" prefHeight="553.0" prefWidth="810.0">
                      <children>
                         <Label alignment="CENTER" layoutX="1.0" layoutY="14.0" prefHeight="17.0" prefWidth="809.0" text="Setter Request Form">
                            <font>
@@ -246,7 +246,7 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <TextArea wrapText="true" fx:id="messageToSetter" layoutX="458.0" layoutY="90.0" prefHeight="160.0" prefWidth="335.0" promptText="Message">
+                        <TextArea fx:id="messageToSetter" layoutX="458.0" layoutY="90.0" prefHeight="160.0" prefWidth="335.0" promptText="Message" wrapText="true">
                            <font>
                               <Font size="15.0" />
                            </font>
@@ -259,11 +259,12 @@
                         <TableView fx:id="setterRequestTable" layoutX="18.0" layoutY="326.0" prefHeight="200.0" prefWidth="775.0">
                            <columns>
                               <TableColumn fx:id="setterSerialNo" prefWidth="57.0" text="Serial No" />
-                              <TableColumn fx:id="requestParentName" prefWidth="139.0" text="Parent Name" />
-                              <TableColumn fx:id="setterAcceptedBy" prefWidth="167.0" text="Accepted By" />
-                              <TableColumn fx:id="setterAcceptedByNo" prefWidth="166.0" text="Doners Phone No" />
-                              <TableColumn fx:id="setterRequestCreatedAt" prefWidth="160.0" text="Created At" />
-                              <TableColumn fx:id="setterRequestStatus" prefWidth="90.0" text="Status" />
+                              <TableColumn fx:id="requestParentName" prefWidth="116.0" text="Parent Name" />
+                              <TableColumn fx:id="setterAcceptedBy" prefWidth="141.0" text="Accepted By" />
+                              <TableColumn fx:id="setterAcceptedByNo" prefWidth="127.0" text="Doners Phone No" />
+                              <TableColumn fx:id="setterRequestCreatedAt" prefWidth="137.0" text="Created At" />
+                              <TableColumn fx:id="setterRequestStatus" prefWidth="89.0" text="Status" />
+                              <TableColumn fx:id="setterAction" prefWidth="106.0" text="Action" />
                            </columns>
                         </TableView>
                      </children>

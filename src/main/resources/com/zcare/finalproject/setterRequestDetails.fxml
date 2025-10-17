@@ -1,0 +1,24 @@
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Button?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.zcare.finalproject.SetterRequestDetailsController" prefWidth="400" prefHeight="400">
+    <children>
+        <Label layoutX="20" layoutY="20" text="Title:" />
+        <Label fx:id="titleLabel" layoutX="100" layoutY="20" />
+
+        <Label layoutX="20" layoutY="60" text="Message:" />
+        <TextArea fx:id="messageArea" layoutX="100" layoutY="60" prefWidth="250" prefHeight="100" wrapText="true" editable="false"/>
+
+        <Label layoutX="20" layoutY="180" text="Location:" />
+        <Label fx:id="locationLabel" layoutX="100" layoutY="180" />
+
+        <Label layoutX="20" layoutY="220" text="From:" />
+        <Label fx:id="fromDateLabel" layoutX="100" layoutY="220" />
+
+        <Label layoutX="20" layoutY="260" text="To:" />
+        <Label fx:id="toDateLabel" layoutX="100" layoutY="260" />
+
+        <Button fx:id="acceptBtn" text="Accept Request" layoutX="250" layoutY="320" onAction="#handleAccept" />
+    </children>
+</AnchorPane>
