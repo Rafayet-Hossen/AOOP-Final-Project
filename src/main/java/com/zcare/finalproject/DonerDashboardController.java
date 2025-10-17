@@ -39,14 +39,23 @@ public class DonerDashboardController implements Initializable {
     private void loadBloodRequests() {
         ObservableList<BloodRequestRow> list = FXCollections.observableArrayList();
 
-        String sql = "SELECT r.id, p.name, p.phone, r.message " +
-                "FROM blood_donor_requests r " +
-                "JOIN parents p ON r.parent_id = p.id " +
-                "WHERE r.status = 'REQUESTED' AND r.needed_to >= NOW()";
+        String sql = """
+        SELECT r.id, p.name, p.phone, r.message
+        FROM blood_donor_requests r
+        JOIN parents p ON r.parent_id = p.id
+        WHERE r.status = 'REQUESTED'
+          AND r.needed_to >= NOW()
+          AND r.id NOT IN (
+              SELECT request_id FROM blood_donor_accepts WHERE donor_id = ?
+          )
+        ORDER BY r.created_at DESC
+    """;
 
         try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, SessionManager.loggedInDonorId);
+            ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
                 list.add(new BloodRequestRow(
@@ -63,10 +72,12 @@ public class DonerDashboardController implements Initializable {
             e.printStackTrace();
             AlertUtil.errorAlert("Failed to load blood requests.");
         }
+
         requestId.setCellValueFactory(data -> data.getValue().idProperty());
         parentsName.setCellValueFactory(data -> data.getValue().parentNameProperty());
         parentsPhoneNo.setCellValueFactory(data -> data.getValue().parentPhoneProperty());
         messages.setCellValueFactory(data -> data.getValue().messageProperty());
+
         action.setCellFactory(col -> new TableCell<>() {
             private final Button btn = new Button("Accept");
 
@@ -80,42 +91,36 @@ public class DonerDashboardController implements Initializable {
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(btn);
-                }
+                setGraphic(empty ? null : btn);
             }
         });
     }
+
     private void handleAcceptRequest(int requestId) {
         int donorId = SessionManager.loggedInDonorId;
-        String sql = "UPDATE blood_donor_requests " +
-                "SET blood_donor_id = ?, status = 'ACCEPTED' " +
-                "WHERE id = ? AND status = 'REQUESTED' AND (blood_donor_id IS NULL OR blood_donor_id = 0)";
+
+        String insertSql = "INSERT INTO blood_donor_accepts (request_id, donor_id) VALUES (?, ?)";
 
         try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(insertSql)) {
 
-            ps.setInt(1, donorId);
-            ps.setInt(2, requestId);
+            ps.setInt(1, requestId);
+            ps.setInt(2, donorId);
 
-            int updated = ps.executeUpdate();
+            int rows = ps.executeUpdate();
 
-            if (updated > 0) {
-                AlertUtil.successAlert("Request accepted successfully!");
-                loadBloodRequests();
-            } else {
-                AlertUtil.errorAlert("Sorry — this request was already accepted by another donor.");
+            if (rows > 0) {
+                AlertUtil.successAlert("You have accepted this request successfully!");
                 loadBloodRequests();
             }
 
+        } catch (java.sql.SQLIntegrityConstraintViolationException e) {
+            AlertUtil.errorAlert("You’ve already accepted this request.");
         } catch (Exception e) {
             e.printStackTrace();
-            AlertUtil.errorAlert("Database error: " + e.getMessage());
+            AlertUtil.errorAlert("Failed to accept request: " + e.getMessage());
         }
     }
-
 
     @FXML
     private void handleLogout() {
