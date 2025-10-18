@@ -30,12 +30,6 @@
                      </font>
                   </Label>
                   <Button layoutX="18.0" layoutY="209.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="142.0" text="Chats" />
-                  <Button layoutX="18.0" layoutY="289.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="142.0" text="Update Profile" />
-                  <Label layoutX="19.0" layoutY="259.0" text="Profile:">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
                   <Label layoutX="21.0" layoutY="110.0" text="Doner ID:" />
                   <Label fx:id="loginDonerId" layoutX="82.0" layoutY="110.0" text="0" />
                </children>

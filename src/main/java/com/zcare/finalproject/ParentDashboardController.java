@@ -248,6 +248,18 @@ public class ParentDashboardController implements Initializable {
             }
         });
 
+        bloodRequestTable.setRowFactory(tv -> {
+            TableRow<BloodRequest> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getClickCount() == 2) {
+                    BloodRequest selectedRequest = row.getItem();
+                    openBloodRequestDetailsPopup(selectedRequest.getId());
+                }
+            });
+            return row;
+        });
+
+
 
         babyGender.getSelectionModel().clearSelection();
         babyBloodGroup.getSelectionModel().clearSelection();
@@ -330,6 +342,27 @@ public class ParentDashboardController implements Initializable {
             AlertUtil.errorAlert("Logout failed.");
         }
     }
+
+    private void openBloodRequestDetailsPopup(int requestId) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("parentBloodRequestDetails.fxml"));
+            Parent root = loader.load();
+
+            ParentBloodRequestDetailsController controller = loader.getController();
+            controller.setRequestId(requestId);
+
+            Stage stage = new Stage();
+            stage.setTitle("Blood Request Details");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Could not open details window.");
+        }
+    }
+
 
     @FXML
     private void handleSubmitForm() {

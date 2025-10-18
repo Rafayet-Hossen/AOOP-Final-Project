@@ -53,8 +53,6 @@
                                 <Button fx:id="donersBtn" layoutX="14.0" layoutY="346.0" onAction="#loadDoners" styleClass="menu-btn" text="Blood Donors" />
                                 <Button fx:id="settersBtn" layoutX="14.0" layoutY="398.0" onAction="#loadSetters" styleClass="menu-btn" text="Baby Setter" />
                                 <Button fx:id="appointmentsBtn" layoutX="14.0" layoutY="450.0" styleClass="menu-btn" text="Appointments" />
-                                <Label layoutX="16.0" layoutY="517.0" styleClass="sidebar-label" text="Profile:" />
-                                <Button fx:id="updateProfileBtn" layoutX="12.0" layoutY="545.0" prefHeight="33.0" prefWidth="139.0" styleClass="profile-btn" text="Update Profile" />
                             </children>
                         </AnchorPane>
                     </left>

@@ -74,12 +74,6 @@
                   <Button fx:id="doctorsTipsBtn" layoutX="18.0" layoutY="299.0" mnemonicParsing="false" onAction="#handleDoctorsTipsView" prefHeight="31.0" prefWidth="151.0" text="Doctors Tips" />
                   <Button fx:id="emergencyContactBtn" layoutX="18.0" layoutY="337.0" mnemonicParsing="false" onAction="#handleEmergencyContactView" prefHeight="31.0" prefWidth="151.0" text="Emergency Contact" />
                   <Button fx:id="chatsBtn" layoutX="18.0" layoutY="375.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Chats" />
-                  <Button fx:id="updateProfileBtn" layoutX="18.0" layoutY="490.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Update Profile" />
-                  <Label layoutX="19.0" layoutY="464.0" prefHeight="19.0" prefWidth="48.0" text="Profile:">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Label>
                   <Button fx:id="appointmentsStatusBtn" layoutX="18.0" layoutY="415.0" mnemonicParsing="false" onAction="#handleAppointmentsStatusView" prefHeight="31.0" prefWidth="151.0" text="Appointment Status" />
                   <Label fx:id="loginParentId" layoutX="77.0" layoutY="82.0" prefHeight="19.0" prefWidth="9.0" text="0">
                      <font>
