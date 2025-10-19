@@ -35,7 +35,6 @@
                   <Label layoutX="29.0" layoutY="176.0" text="Menus:" />
                   <Button fx:id="pendingAppointmentsBtn" layoutX="28.0" layoutY="212.0" mnemonicParsing="false" onAction="#handlePendingAppointmentsView" prefHeight="34.0" prefWidth="145.0" text="Appointments" />
                   <Button fx:id="shareTipsBtn" layoutX="28.0" layoutY="265.0" mnemonicParsing="false" onAction="#handleShareTipsView" prefHeight="34.0" prefWidth="145.0" text="Share Tips" />
-                  <Button layoutX="28.0" layoutY="322.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="145.0" text="Chats" />
                   <Button fx:id="logoutBtn" layoutX="28.0" layoutY="453.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="34.0" prefWidth="145.0" text="Logout" />
                </children>
             </AnchorPane>
