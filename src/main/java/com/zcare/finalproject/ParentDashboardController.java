@@ -259,6 +259,12 @@ public class ParentDashboardController implements Initializable {
             return row;
         });
 
+        setterRequestTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && !setterRequestTable.getSelectionModel().isEmpty()) {
+                BabySetterRequest selected = setterRequestTable.getSelectionModel().getSelectedItem();
+                openSetterRequestDetails(selected.getId());
+            }
+        });
 
 
         babyGender.getSelectionModel().clearSelection();
@@ -360,6 +366,25 @@ public class ParentDashboardController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
             AlertUtil.errorAlert("Could not open details window.");
+        }
+    }
+
+    private void openSetterRequestDetails(int requestId) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("babySetterRequestDetails.fxml"));
+            Parent root = loader.load();
+
+            BabySetterRequestDetailsController controller = loader.getController();
+            controller.setRequestId(requestId);
+
+            Stage stage = new Stage();
+            stage.setTitle("Baby Setter Request Details");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertUtil.errorAlert("Failed to open request details.");
         }
     }
 
