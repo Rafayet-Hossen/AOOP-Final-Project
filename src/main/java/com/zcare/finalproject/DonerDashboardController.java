@@ -14,6 +14,8 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class DonerDashboardController implements Initializable {
@@ -27,11 +29,17 @@ public class DonerDashboardController implements Initializable {
     @FXML private Label loginDonerId;
     @FXML private Label loginDonerUsername;
     @FXML private Button logoutBtn;
+    @FXML private Label currentTimeLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loginDonerId.setText(String.valueOf(SessionManager.loggedInDonorId));
         loginDonerUsername.setText(SessionManager.loggedInDonorName);
+
+        currentTimeLabel.setText(
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMM,yyyy h:mma"))
+        );
+
         loadBloodRequests();
     }
 

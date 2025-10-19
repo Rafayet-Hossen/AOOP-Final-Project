@@ -35,22 +35,21 @@
                      </font>
                   </Label>
                   <Circle fill="#17da45" layoutX="970.0" layoutY="26.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" />
-                  <Label layoutX="686.0" layoutY="16.0" prefHeight="19.0" prefWidth="60.0" text="Welcome,">
+                  <Label layoutX="675.0" layoutY="17.0" prefHeight="19.0" prefWidth="60.0" text="Welcome,">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
                   <Label fx:id="loginParentsName" layoutX="746.0" layoutY="17.0" prefHeight="19.0" prefWidth="116.0" text="User 123">
                      <font>
-                        <Font size="13.0" />
+                        <Font name="System Bold" size="14.0" />
                      </font>
                   </Label>
-                  <Label fx:id="currentTimeLabel" layoutX="507.0" layoutY="17.0" prefHeight="19.0" prefWidth="98.0" text="Current Time">
+                  <Label fx:id="currentTimeLabel" layoutX="393.0" layoutY="17.0" prefHeight="19.0" prefWidth="186.0" text="Current Time">
                      <font>
-                        <Font size="13.0" />
+                        <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <Button fx:id="logoutBtn" layoutX="613.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleLogout" text="Logout" />
                </children>
             </AnchorPane>
          </top>
@@ -70,21 +69,22 @@
                   </Label>
                   <Button fx:id="availableBloodDonersBtn" layoutX="18.0" layoutY="183.0" mnemonicParsing="false" onAction="#handleAvailableBloodDonersView" prefHeight="30.0" prefWidth="151.0" text="Blood Request" />
                   <Button fx:id="availableBabySetterBtn" layoutX="18.0" layoutY="222.0" mnemonicParsing="false" onAction="#handleAvailableBabySetterView" prefHeight="31.0" prefWidth="151.0" text="Hire Baby Setter" />
-                  <Button fx:id="babyDetailsBtn" layoutX="18.0" layoutY="261.0" mnemonicParsing="false" onAction="#handleBabyDetailsView" prefHeight="31.0" prefWidth="151.0" text="Baby Details" />
-                  <Button fx:id="doctorsTipsBtn" layoutX="18.0" layoutY="299.0" mnemonicParsing="false" onAction="#handleDoctorsTipsView" prefHeight="31.0" prefWidth="151.0" text="Doctors Tips" />
-                  <Button fx:id="emergencyContactBtn" layoutX="18.0" layoutY="337.0" mnemonicParsing="false" onAction="#handleEmergencyContactView" prefHeight="31.0" prefWidth="151.0" text="Emergency Contact" />
-                  <Button fx:id="chatsBtn" layoutX="18.0" layoutY="375.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Chats" />
-                  <Button fx:id="appointmentsStatusBtn" layoutX="18.0" layoutY="415.0" mnemonicParsing="false" onAction="#handleAppointmentsStatusView" prefHeight="31.0" prefWidth="151.0" text="Appointment Status" />
-                  <Label fx:id="loginParentId" layoutX="77.0" layoutY="82.0" prefHeight="19.0" prefWidth="9.0" text="0">
+                  <Button fx:id="babyDetailsBtn" layoutX="19.0" layoutY="262.0" mnemonicParsing="false" onAction="#handleBabyDetailsView" prefHeight="31.0" prefWidth="151.0" text="Baby Details" />
+                  <Button fx:id="doctorsTipsBtn" layoutX="19.0" layoutY="304.0" mnemonicParsing="false" onAction="#handleDoctorsTipsView" prefHeight="31.0" prefWidth="151.0" text="Doctors Tips" />
+                  <Button fx:id="emergencyContactBtn" layoutX="19.0" layoutY="344.0" mnemonicParsing="false" onAction="#handleEmergencyContactView" prefHeight="31.0" prefWidth="151.0" text="Emergency Contact" />
+                  <Button fx:id="chatsBtn" layoutX="18.0" layoutY="384.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Chats" />
+                  <Button fx:id="appointmentsStatusBtn" layoutX="18.0" layoutY="422.0" mnemonicParsing="false" onAction="#handleAppointmentsStatusView" prefHeight="31.0" prefWidth="151.0" text="Appointment Status" />
+                  <Label fx:id="loginParentId" layoutX="106.0" layoutY="81.0" prefHeight="19.0" prefWidth="9.0" text="0">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
-                  <Label fx:id="currentTimeLabel11" layoutX="19.0" layoutY="82.0" prefHeight="19.0" prefWidth="58.0" text="Parent Id:">
+                  <Label fx:id="currentTimeLabel11" layoutX="24.0" layoutY="81.0" prefHeight="19.0" prefWidth="71.0" text="Parent Id:">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
+                  <Button fx:id="logoutBtn" layoutX="18.0" layoutY="484.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="31.0" prefWidth="151.0" text="Logout" />
                </children></AnchorPane>
          </left>
          <center>
@@ -202,7 +202,7 @@
                         </TableView>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="babySetterRequestPane" layoutX="2.0" layoutY="2.0" prefHeight="553.0" prefWidth="810.0">
+                  <AnchorPane fx:id="babySetterRequestPane" layoutX="2.0" layoutY="2.0" prefHeight="553.0" prefWidth="810.0" visible="false">
                      <children>
                         <Label alignment="CENTER" layoutX="1.0" layoutY="14.0" prefHeight="17.0" prefWidth="809.0" text="Setter Request Form">
                            <font>

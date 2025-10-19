@@ -26,6 +26,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -70,6 +72,7 @@ public class DoctorDashboardController implements Initializable {
     @FXML private Label dDistrict;
 
     @FXML private AnchorPane updateProfilePane;
+    @FXML private Label currentTimeLabel;
 
     @FXML private AnchorPane previousAppointmentPane;
 
@@ -84,6 +87,10 @@ public class DoctorDashboardController implements Initializable {
         scheduledAt.setCellValueFactory(data -> data.getValue().scheduledAtProperty());
         status.setCellValueFactory(data -> data.getValue().statusProperty());
         parentsNote.setCellValueFactory(data -> data.getValue().notesProperty());
+
+        currentTimeLabel.setText(
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMM,yyyy h:mma"))
+        );
 
         filteredByStatus.setItems(FXCollections.observableArrayList("ALL", "REQUESTED", "CONFIRMED", "CANCELLED", "COMPLETED"));
         filteredByStatus.getSelectionModel().select("ALL");

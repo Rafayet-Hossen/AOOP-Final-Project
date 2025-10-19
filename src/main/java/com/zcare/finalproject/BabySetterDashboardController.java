@@ -15,6 +15,8 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class BabySetterDashboardController implements Initializable {
@@ -32,6 +34,7 @@ public class BabySetterDashboardController implements Initializable {
     @FXML private TableColumn<BabySetterRequest, String> setterParentsNo;
     @FXML private TableColumn<BabySetterRequest, String> parentsMessage;
     @FXML private TableColumn<BabySetterRequest, Void> setterAction;
+    @FXML private Label currentTimeLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -43,6 +46,10 @@ public class BabySetterDashboardController implements Initializable {
         setterRequestParents.setCellValueFactory(data -> data.getValue().parentNameProperty());
         setterParentsNo.setCellValueFactory(data -> data.getValue().parentPhoneProperty());
         parentsMessage.setCellValueFactory(data -> data.getValue().messageProperty());
+
+        currentTimeLabel.setText(
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMM,yyyy h:mma"))
+        );
 
         setterAction.setCellFactory(col -> new TableCell<>() {
             private final Button viewBtn = new Button("View Details");

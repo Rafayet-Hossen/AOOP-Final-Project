@@ -18,6 +18,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class ParentDashboardController implements Initializable {
@@ -212,7 +214,9 @@ public class ParentDashboardController implements Initializable {
         setterAcceptedByNo.setCellValueFactory(data -> data.getValue().acceptedByPhoneProperty());
         setterRequestCreatedAt.setCellValueFactory(data -> data.getValue().createdAtProperty());
         setterRequestStatus.setCellValueFactory(data -> data.getValue().statusProperty());
-
+        currentTimeLabel.setText(
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMM,yyyy h:mma"))
+        );
         setterAction.setCellFactory(col -> new TableCell<>() {
             private final Button completeBtn = new Button("Completed");
 
