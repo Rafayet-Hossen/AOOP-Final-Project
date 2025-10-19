@@ -117,7 +117,6 @@ public class DoctorDashboardController implements Initializable {
         pendingAppointmentsPane.setVisible(false);
         previousAppointmentPane.setVisible(false);
         shareTipsPane.setVisible(true);
-        updateProfilePane.setVisible(false);
     }
 
     @FXML
@@ -125,7 +124,6 @@ public class DoctorDashboardController implements Initializable {
         pendingAppointmentsPane.setVisible(true);
         shareTipsPane.setVisible(false);
         previousAppointmentPane.setVisible(false);
-        updateProfilePane.setVisible(false);
         loadDoctorAppointments();
     }
 
@@ -134,14 +132,12 @@ public class DoctorDashboardController implements Initializable {
         previousAppointmentPane.setVisible(true);
         pendingAppointmentsPane.setVisible(false);
         shareTipsPane.setVisible(false);
-        updateProfilePane.setVisible(false);
     }
     @FXML
     private void handleUpdateProfileView(){
         previousAppointmentPane.setVisible(false);
         pendingAppointmentsPane.setVisible(false);
         shareTipsPane.setVisible(false);
-        updateProfilePane.setVisible(true);
         loadDoctorProfile();
     }
 
