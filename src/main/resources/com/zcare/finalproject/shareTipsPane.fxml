@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.text.Font?>
-<AnchorPane fx:id="shareTipsPane" xmlns="http://javafx.com/javafx/24.0.1"
+<AnchorPane stylesheets="@Stylesheet/style.css" fx:id="shareTipsPane" xmlns="http://javafx.com/javafx/24.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.zcare.finalproject.DoctorDashboardController"
             prefHeight="555.0" prefWidth="812.0" visible="false">

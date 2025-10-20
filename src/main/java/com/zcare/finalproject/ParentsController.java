@@ -212,6 +212,7 @@ public class ParentsController extends PageUtil implements Initializable {
                 AlertUtil.successAlert("Login successful!");
                 SessionManager.loggedInParentId = rs.getInt("id");
                 SessionManager.loggedInParentsName = rs.getString("name");
+                SessionManager.loggedInParentEmail = rs.getString("email");
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("parentsDashboard.fxml"));
                 Parent root = fxmlLoader.load();
                 Stage stage = (Stage) parentsLoginBtn.getScene().getWindow();

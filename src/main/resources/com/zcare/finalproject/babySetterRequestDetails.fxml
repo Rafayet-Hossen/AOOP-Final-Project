@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane prefHeight="580.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zcare.finalproject.BabySetterRequestDetailsController">
+<AnchorPane stylesheets="@Stylesheet/style.css" prefHeight="580.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zcare.finalproject.BabySetterRequestDetailsController">
    <children>
       <Label alignment="CENTER" layoutY="7.0" prefHeight="18.0" prefWidth="600.0" text="Setter Request Details">
          <font>

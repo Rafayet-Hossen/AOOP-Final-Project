@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zcare.finalproject.DonerDashboardController">
+<StackPane stylesheets="@Stylesheet/style.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zcare.finalproject.DonerDashboardController">
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0">
          <left>
@@ -29,13 +29,12 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Button layoutX="18.0" layoutY="209.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="142.0" text="Chats" />
                   <Label layoutX="21.0" layoutY="110.0" text="Doner ID:" />
                   <Label fx:id="loginDonerId" layoutX="90.0" layoutY="109.0" text="0">
                      <font>
                         <Font size="14.0" />
                      </font></Label>
-                  <Button fx:id="logoutBtn" layoutX="19.0" layoutY="273.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="30.0" prefWidth="142.0" text="Log Out" />
+                  <Button fx:id="logoutBtn" layoutX="17.0" layoutY="239.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="30.0" prefWidth="142.0" text="Log Out" />
                </children>
             </AnchorPane>
          </left>
@@ -69,10 +68,10 @@
                      <children>
                         <TableView fx:id="bloodRequestTable" layoutX="18.0" layoutY="51.0" prefHeight="272.0" prefWidth="688.0">
                            <columns>
-                              <TableColumn fx:id="requestId" prefWidth="66.0" text="Request Id" />
-                              <TableColumn fx:id="parentsName" prefWidth="131.0" text="Request By" />
-                              <TableColumn fx:id="parentsPhoneNo" prefWidth="131.0" text="Phone No" />
-                              <TableColumn fx:id="messages" prefWidth="261.0" text="Messege" />
+                              <TableColumn fx:id="requestId" prefWidth="89.59997749328613" text="Request Id" />
+                              <TableColumn fx:id="parentsName" prefWidth="132.79998016357422" text="Request By" />
+                              <TableColumn fx:id="parentsPhoneNo" prefWidth="144.80001831054688" text="Phone No" />
+                              <TableColumn fx:id="messages" prefWidth="223.99996948242188" text="Messege" />
                               <TableColumn fx:id="action" prefWidth="98.0" text="Action" />
                            </columns>
                         </TableView>

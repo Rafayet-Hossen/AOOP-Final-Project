@@ -29,13 +29,12 @@
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <Button layoutX="18.0" layoutY="209.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="142.0" text="Chats" />
                   <Label layoutX="21.0" layoutY="110.0" text="Doner ID:" />
                   <Label fx:id="loginSetterId" layoutX="85.0" layoutY="110.0" text="0">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font></Label>
-                  <Button fx:id="setterLogoutBtn" layoutX="19.0" layoutY="277.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="28.0" prefWidth="140.0" text="Log Out" />
+                  <Button fx:id="setterLogoutBtn" layoutX="19.0" layoutY="255.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="28.0" prefWidth="140.0" text="Log Out" />
                </children>
             </AnchorPane>
          </left>

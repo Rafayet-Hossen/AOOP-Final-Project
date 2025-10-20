@@ -18,7 +18,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zcare.finalproject.ParentDashboardController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" stylesheets="@Stylesheet/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zcare.finalproject.ParentDashboardController">
    <children>
       <BorderPane prefHeight="200.0" prefWidth="200.0">
          <top>
@@ -35,7 +35,7 @@
                      </font>
                   </Label>
                   <Circle fill="#17da45" layoutX="970.0" layoutY="26.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" />
-                  <Label layoutX="675.0" layoutY="17.0" prefHeight="19.0" prefWidth="60.0" text="Welcome,">
+                  <Label layoutX="663.0" layoutY="17.0" prefHeight="20.0" prefWidth="72.0" text="Welcome,">
                      <font>
                         <Font size="13.0" />
                      </font>
@@ -72,7 +72,7 @@
                   <Button fx:id="babyDetailsBtn" layoutX="19.0" layoutY="262.0" mnemonicParsing="false" onAction="#handleBabyDetailsView" prefHeight="31.0" prefWidth="151.0" text="Baby Details" />
                   <Button fx:id="doctorsTipsBtn" layoutX="19.0" layoutY="304.0" mnemonicParsing="false" onAction="#handleDoctorsTipsView" prefHeight="31.0" prefWidth="151.0" text="Doctors Tips" />
                   <Button fx:id="emergencyContactBtn" layoutX="19.0" layoutY="344.0" mnemonicParsing="false" onAction="#handleEmergencyContactView" prefHeight="31.0" prefWidth="151.0" text="Emergency Contact" />
-                  <Button fx:id="chatsBtn" layoutX="18.0" layoutY="384.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="151.0" text="Chats" />
+                  <Button fx:id="chatsBtn" layoutX="18.0" layoutY="384.0" mnemonicParsing="false" onAction="#handleOpenChat" prefHeight="31.0" prefWidth="151.0" text="Chats" />
                   <Button fx:id="appointmentsStatusBtn" layoutX="18.0" layoutY="422.0" mnemonicParsing="false" onAction="#handleAppointmentsStatusView" prefHeight="31.0" prefWidth="151.0" text="Appointment Status" />
                   <Label fx:id="loginParentId" layoutX="106.0" layoutY="81.0" prefHeight="19.0" prefWidth="9.0" text="0">
                      <font>

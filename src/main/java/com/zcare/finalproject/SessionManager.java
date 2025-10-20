@@ -15,4 +15,5 @@ public class SessionManager {
 
     public static int loggedInDoctorId;
     public static String loggedInDoctorName;
+    public static String loggedInParentEmail;
 }

@@ -14,7 +14,7 @@
 
 <StackPane fx:id="parentsLoginPage" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="375.0" prefWidth="535.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zcare.finalproject.AdminController">
    <children>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+      <AnchorPane stylesheets="@Stylesheet/style.css" prefHeight="200.0" prefWidth="200.0">
          <children>
             <Pane layoutY="3.0" prefHeight="375.0" prefWidth="195.0">
                <children>

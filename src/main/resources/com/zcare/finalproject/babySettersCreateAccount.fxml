@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="385.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zcare.finalproject.BabySetterController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="385.0" stylesheets="@Stylesheet/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zcare.finalproject.BabySetterController">
    <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
@@ -32,7 +32,7 @@
             <TextField fx:id="babySetterPhoneNo" layoutX="51.0" layoutY="305.0" prefHeight="40.0" prefWidth="283.0" promptText="Phone No" />
             <TextField fx:id="babySetterAddress" layoutX="51.0" layoutY="359.0" prefHeight="40.0" prefWidth="283.0" promptText="Address" />
             <Button fx:id="createBabySetterAccountBtn" layoutX="51.0" layoutY="508.0" mnemonicParsing="false" onAction="#babySetterRegister" prefHeight="40.0" prefWidth="283.0" text="Create Account" />
-            <Label layoutX="84.0" layoutY="560.0" prefHeight="17.0" prefWidth="142.0" text="Already have an account?" />
+            <Label layoutX="42.0" layoutY="560.0" prefHeight="20.0" prefWidth="184.0" text="Already have an account?" />
             <Hyperlink fx:id="switchToLogin" layoutX="230.0" layoutY="557.0" onAction="#switchToLoginPage" text="Login Here" />
             <TextField fx:id="babySetterHourlyRate" layoutX="51.0" layoutY="459.0" prefHeight="40.0" prefWidth="283.0" promptText="Hourly Rate" />
             <ComboBox fx:id="babySetterDistrict" layoutX="51.0" layoutY="410.0" prefHeight="40.0" prefWidth="283.0" />

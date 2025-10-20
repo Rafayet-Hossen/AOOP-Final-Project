@@ -277,6 +277,20 @@ public class ParentDashboardController implements Initializable {
         loadBabyTable();
     }
 
+//    @FXML
+//    private void handleChatsBtn() {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("parentGroupChat.fxml"));
+//            Parent root = loader.load();
+//            Stage stage = new Stage();
+//            stage.setScene(new Scene(root));
+//            stage.setTitle("Parent Community Chat");
+//            stage.show();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     private void showOnlyPane(AnchorPane paneToShow) {
         babyInformationPane.setVisible(false);
         availableDoctorsPane.setVisible(false);
@@ -352,6 +366,25 @@ public class ParentDashboardController implements Initializable {
             AlertUtil.errorAlert("Logout failed.");
         }
     }
+
+    @FXML
+    private void handleOpenChat() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("parentGroupChat.fxml"));
+            Parent root = loader.load();
+
+            ChatUIController controller = loader.getController();
+            controller.initializeChat(SessionManager.loggedInParentsName);
+
+            Stage stage = new Stage();
+            stage.setTitle("Parent Group Chat");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void openBloodRequestDetailsPopup(int requestId) {
         try {
